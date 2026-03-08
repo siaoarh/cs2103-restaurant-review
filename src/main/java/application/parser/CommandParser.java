@@ -1,5 +1,9 @@
 package application.parser;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import application.command.AddReviewCommand;
 import application.command.Command;
 import application.command.CommandType;
@@ -7,10 +11,6 @@ import application.command.DeleteReviewCommand;
 import application.command.ExitCommand;
 import application.command.ListReviewsCommand;
 import application.command.UnknownCommand;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * CommandParser class for parsing user input into commands.

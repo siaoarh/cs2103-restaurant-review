@@ -1,14 +1,14 @@
 package application;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 import application.command.Command;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.parser.CommandParser;
 import application.review.ReviewList;
 import application.storage.Storage;
-
-import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Main class.

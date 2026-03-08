@@ -1,11 +1,11 @@
 package application.command;
 
+import java.io.IOException;
+
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.review.ReviewList;
 import application.storage.Storage;
-
-import java.io.IOException;
 
 /**
  * Class representing a generic user command.

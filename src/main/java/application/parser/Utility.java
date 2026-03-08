@@ -1,12 +1,12 @@
 package application.parser;
 
-import application.exception.InvalidArgumentException;
-import application.exception.MissingArgumentException;
-import application.review.Rating;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import application.exception.InvalidArgumentException;
+import application.exception.MissingArgumentException;
+import application.review.Rating;
 
 /**
  * Utility class containing generic methods for parsing inputs.

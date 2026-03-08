@@ -1,9 +1,9 @@
 package application.review;
 
-import application.exception.InvalidArgumentException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import application.exception.InvalidArgumentException;
 
 /**
  * Class representing a list of reviews.
@@ -39,7 +39,7 @@ public class ReviewList {
      * @param index the index of the review to remove
      * @throws InvalidArgumentException if the index is invalid
      */
-    public Review removeReview(int index) throws InvalidArgumentException{
+    public Review removeReview(int index) throws InvalidArgumentException {
         if (isInvalidIndex(index)) {
             throw new InvalidArgumentException("Invalid review index!");
         }
