@@ -24,6 +24,14 @@ public class Rating {
     }
 
     /**
+     * Getter for rating value.
+     * @return the float value of the rating
+     */
+    public float getRatingValue() {
+        return rating;
+    }
+
+    /**
      * Returns a string representation of the rating.
      * @return a string representation of the rating
      */
