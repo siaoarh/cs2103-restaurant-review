@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,11 +41,11 @@ public class ReviewListTest {
     public void reviewListConstructor_listInput_success() {
         Review review1 = new Review("User1", "Great", new Rating(5));
         Review review2 = new Review("User2", "Bad", new Rating(1));
-        java.util.List<Review> reviews = java.util.List.of(review1, review2);
-        
+        List<Review> reviews = List.of(review1, review2);
+
         ReviewList list = new ReviewList(reviews);
         String output = list.toString();
-        
+
         assertTrue(output.contains("User1"));
         assertTrue(output.contains("User2"));
         assertTrue(output.contains("Rating: 5.0"));

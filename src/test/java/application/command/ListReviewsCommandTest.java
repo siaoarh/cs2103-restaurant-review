@@ -39,14 +39,13 @@ public class ListReviewsCommandTest {
 
     /**
      * Tests listing reviews with both empty and non-empty lists.
-     * @throws Exception if an error occurs during execution
      */
     @Test
-    public void listReviewsCommand_success() throws Exception {
+    public void listReviewsCommand_success() {
         ListReviewsCommand command = new ListReviewsCommand();
         String output = command.execute(reviewList, storage);
         assertEquals("No reviews yet!", output);
-        
+
         reviewList.addReview(new Review("User", "Great", new Rating(5)));
         output = command.execute(reviewList, storage);
         assertTrue(output.contains("User"));

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
  * Tests for CommandType enum.
  */
 public class CommandTypeTest {
-
     /**
      * Tests the getCommandType method with various inputs, including abbreviations.
      */

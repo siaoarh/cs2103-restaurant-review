@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
  * Tests for custom exception classes.
  */
 public class ExceptionTest {
-
     /**
      * Tests the constructor and message of InvalidArgumentException.
      */

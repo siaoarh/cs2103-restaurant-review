@@ -1,7 +1,7 @@
 package application.command;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class AddReviewCommandTest {
         );
         AddReviewCommand command = new AddReviewCommand(args);
         String output = command.execute(reviewList, storage);
-        
+
         assertTrue(output.contains("Added review to list:"));
         assertTrue(output.contains("User"));
         assertTrue(output.contains("Rating: 5.0"));
@@ -72,6 +72,7 @@ public class AddReviewCommandTest {
         AddReviewCommand command = new AddReviewCommand(args);
         assertThrows(MissingArgumentException.class, () -> command.execute(reviewList, storage));
     }
+
     /**
      * Tests adding a review with a missing review body.
      */

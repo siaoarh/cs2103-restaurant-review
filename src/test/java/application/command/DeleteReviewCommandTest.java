@@ -50,14 +50,15 @@ public class DeleteReviewCommandTest {
     public void deleteReviewCommand_validIndex_success() throws Exception {
         // Add a review first
         reviewList.addReview(new Review("User", "Great", new Rating(5)));
-        
+
         Map<String, String> args = Map.of("/default", "1");
         DeleteReviewCommand command = new DeleteReviewCommand(args);
         String output = command.execute(reviewList, storage);
-        
+
         assertTrue(output.contains("deleted!"));
         assertEquals("No reviews yet!", reviewList.toString());
     }
+
     /**
      * Tests deleting a review with an invalid (non-numeric) index.
      */

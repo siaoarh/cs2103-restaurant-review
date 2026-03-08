@@ -103,6 +103,7 @@ public class CommandParserTest {
         Command command = CommandParser.getCommand(null);
         assertInstanceOf(UnknownCommand.class, command);
     }
+
     /**
      * Tests parsing an add command with multiple delimiters of the same type.
      * The latest argument for that delimiter should be captured.

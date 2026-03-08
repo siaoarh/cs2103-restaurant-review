@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
  * Tests for Storage class.
  */
 public class StorageTest {
-
     /**
      * Tests the instantiation of the Storage class.
      */

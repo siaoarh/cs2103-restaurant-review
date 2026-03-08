@@ -16,7 +16,6 @@ import application.command.UnknownCommand;
  * CommandParser class for parsing user input into commands.
  */
 public class CommandParser {
-
     /**
      * Returns a command from the specified input string
      *

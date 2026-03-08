@@ -38,10 +38,9 @@ public class ExitCommandTest {
 
     /**
      * Tests the execution of the exit command.
-     * @throws Exception if an error occurs during execution
      */
     @Test
-    public void exitCommand_execute_success() throws Exception {
+    public void exitCommand_execute_success() {
         String output = command.execute(null, null);
         assertTrue(output.contains("Goodbye!"));
     }
