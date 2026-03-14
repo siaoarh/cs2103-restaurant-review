@@ -23,7 +23,7 @@ The system follows a **3-tier architecture** consisting of:
 This architecture separates user interaction, application logic, and data persistence so that each part of the system remains easier to maintain, extend, and test.
 
 ### Architecture Diagram
-![Architecture Diagram](docs/architecture/architecture-diagram.jpg)
+![Architecture Diagram](/docs/architecture/architecture-diagram.jpg)
 
 ---
 
@@ -81,75 +81,148 @@ This architecture separates user interaction, application logic, and data persis
 ### Class Diagram
 The class diagram below shows the main classes in the system and the relationships between them.
 
-![Class Diagram](docs/architecture/class-diagram.png)
+![Class Diagram](/docs/architecture/class-diagram.png)
 
 ### Sequence Diagrams
-![Sequence Diagram](docs/architecture/seq-diagram-init-and-end.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-init-and-end.png)
 Initialisation and Program End
 
-![Sequence Diagram](docs/architecture/seq-diagram-add-review.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-add-review.png)
 Adding a Review
 
-![Sequence Diagram](docs/architecture/seq-diagram-delete-review.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-delete-review.png)
 Deleting a Review
 
-![Sequence Diagram](docs/architecture/seq-diagram-add-tag.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-add-tag.png)
 Adding a Tag to a Review
 
-![Sequence Diagram](docs/architecture/seq-diagram-sort.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-sort.png)
 Sorting Reviews
 
-![Sequence Diagram](docs/architecture/seq-diagram-filter.png)
+![Sequence Diagram](/docs/architecture/seq-diagram-filter.png)
 Filtering Reviews
 
 ### Use Case Diagram
 
-![Use Case Diagram](docs/architecture/use-case-diagram.png)
+![Use Case Diagram](/docs/architecture/use-case-diagram.png)
 Use Case Diagram
 
 ### Use Cases
 
 <details>
-<summary>Add a Review</summary>
+<summary>UC01 – Add a Review</summary>
 
 > **Software System:** MealMeter\
 > **Use Case:** UC01 – Add a Review\
 > **Actor:** Restaurant Patron\
 > **Precondition:** Restaurant Patron is at the point of sale and is presented with the GUI\
-> **Guarantee:** The review is added to the list of reviews\
-> **MSS:**
-> 1. Restaurant Patron enters a rating for the food, cleanliness, and service
-> 2. Restaurant Patron enters a review
-> 3. Restaurant Patron submits the review
-> 4. MealMeter shows a success message
-> 5. MealMeter saves the review to the data file\
-> Use Case Ends.
+> **MSS:**\
+> **1.** Restaurant Patron enters a rating for the food, cleanliness, and service\
+> **2.** MealMeter validates the rating inputs\
+> **3.** Restaurant Patron enters a review\
+> **4.** Restaurant Patron submits the review\
+> **5.** MealMeter shows a success message\
+> **6.** MealMeter saves the review to the data file\
+> Use case ends.
+> 
+> **Extensions:**\
+> **2a.** MealMeter detects an invalid rating input\
+> **2a1.** MealMeter shows an error message\
+> **2a2.** Restaurant Patron is prompted to enter a valid rating\
+> Steps 2a1 and 2a2 are repeated until the rating is valid.
+> Use case resumes from step 3.
+> 
+> **\*a.** At any time, Restaurant Patron chooses to cancel the review submission\
+> **\*a1.** MealMeter requests to confirm the cancellation\
+> **\*a2.** Restaurant Patron confirms the cancellation\
+> Use case ends.
 </details>
 
 <details>
-<summary>Delete a Review</summary>
+<summary>UC02 – Delete a Review</summary>
 
 > **Software System:** MealMeter\
 > **Use Case:** UC02 – Delete a Review\
 > **Actor:** Restaurant Owner\
 > **Precondition:** Restaurant Owner is logged in\
 > **Guarantee:** The review is deleted from the list of reviews\
-> **MSS:**
-> 1. Restaurant Owner enters the index of the review to be deleted
-> 2. MealMeter deletes the review from the data file
-> 3. MealMeter shows a success message\
-> Use Case Ends.
+> **MSS:**\
+> **1.** Restaurant Owner views all reviews\
+> **2.** Restaurant Owner selects the review to be deleted\
+> **3.** MealMeter validates the selection\
+> **4.** MealMeter requests to confirm the deletion\
+> **5.** Restaurant Owner confirms the deletion\
+> **6.** MealMeter deletes the review from the data file\
+> **7.** MealMeter shows a success message\
+> Use case ends.
+> 
+> **Extensions:**\
+> **3a.** MealMeter detects an invalid selection\
+> **3a1.** MealMeter shows an error message\
+> **3a2.** Restaurant Owner is prompted to select a valid review\
+> Steps 3a1 and 3a2 are repeated until the selection is valid.
+> Use case resumes from step 4.
 </details>
 
-[//]: # (- **UC3:** Add a tag to a review)
+<details>
+<summary>UC03 – Tag a Review</summary>
 
-[//]: # (- **UC4:** Sort reviews)
+> **Software System:** MealMeter\
+> **Use Case:** UC03 – Tag a Review\
+> **Actor:** Restaurant Owner\
+> **Precondition:** Restaurant Owner is logged in\
+> **Guarantee:** The review is tagged with the new tag\
+> **MSS:**\
+> **1.** Restaurant Owner views all reviews\
+> **2.** Restaurant Owner selects the review to be tagged\
+> **3.** MealMeter validates the selection\
+> **4.** MealMeter prompts the Restaurant Owner to enter the tag name\
+> **5.** Restaurant Owner enters the tag name\
+> **6.** Restaurant Owner submits the tag\
+> **7.** MealMeter shows a success message\
+> **8.** MealMeter saves the newly tagged review to the data file\
+> Use case ends.
+>
+> **Extensions:**\
+> **3a.** MealMeter detects an invalid selection\
+> **3a1.** MealMeter shows an error message\
+> **3a2.** Restaurant Owner is prompted to select a valid review\
+> Steps 3a1 and 3a2 are repeated until the selection is valid.
+> Use case resumes from step 4.
+</details>
 
-[//]: # (- **UC5:** Filter reviews)
+<details>
+<summary>UC04 – Sort Reviews</summary>
 
-[//]: # (- **UC6:** View all reviews)
+> **Software System:** MealMeter\
+> **Use Case:** UC04 – Sort Reviews\
+> **Actor:** Restaurant Owner\
+> **Precondition:** Restaurant Owner is logged in\
+> **MSS:**\
+> **1.** Restaurant Owner views all reviews\
+> **2.** Restaurant Owner selects the sorting criterion\
+> **3.** MealMeter sorts the reviews based on the criterion\
+> **7.** MealMeter shows the new sorted list\
+> Use case ends.
 
-[//]: # (- **UC7:** View a specific review)
+</details>
+
+<details>
+<summary>UC05 – Filter Reviews</summary>
+
+> **Software System:** MealMeter\
+> **Use Case:** UC05 – Filter Reviews\
+> **Actor:** Restaurant Owner\
+> **Precondition:** Restaurant Owner is logged in\
+> **MSS:**\
+> **1.** Restaurant Owner views all reviews\
+> **2.** Restaurant Owner selects the filtering criterion\
+> **3.** MealMeter filters the reviews based on the criterion\
+> **7.** MealMeter shows the new filtered list\
+> Use case ends.
+
+</details>
+
 ---
 
 ## Design Details
