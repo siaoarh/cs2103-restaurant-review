@@ -103,7 +103,9 @@ Sorting Reviews
 Filtering Reviews
 
 ### Use Case Diagram
-*Placeholder: Insert use case diagram here.*
+
+![Use Case Diagram](docs/architecture/use-case-diagram.png)
+Use Case Diagram
 
 ---
 
