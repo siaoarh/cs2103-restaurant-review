@@ -1,8 +1,5 @@
 package application.sorter;
 
-import application.exception.InvalidArgumentException;
-import application.parser.ArgumentParser;
-
 /**
  * Enum representing the different criteria for sorting reviews.
  */
