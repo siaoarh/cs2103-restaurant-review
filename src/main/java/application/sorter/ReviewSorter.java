@@ -1,25 +1,45 @@
 package application.sorter;
 
+import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
 
 import java.util.function.Function;
 
+/**
+ * Class for sorting reviews based on a given criterion and sort order.
+ */
 public class ReviewSorter {
-    public static ReviewList sort(String sortCriterionAsString, String sortOrderAsString, ReviewList reviewList) {
-        SortCriterion sortCriterion = SortCriterion.getSortCriterion(sortCriterionAsString);
-        SortOrder sortOrder = SortOrder.getSortOrder(sortOrderAsString);
-
+    /**
+     * Sorts the given review list based on the given criterion and sort order.
+     * @param sortCriterion the criterion to sort by
+     * @param sortOrder the sort order (ascending or descending)
+     * @param reviewList the list of reviews to sort
+     * @return a new sorted list of reviews
+     */
+    public static ReviewList sort(
+            SortCriterion sortCriterion,
+            SortOrder sortOrder,
+            ReviewList reviewList
+    ) throws InvalidArgumentException {
         Function<Review, Double> sortCriterionFunction = getSortCriterionFunction(sortCriterion);
 
-        if (sortOrder == SortOrder.ASCENDING) {
+        switch (sortOrder) {
+        case ASCENDING:
             return reviewList.sortByAscending(sortCriterionFunction);
-        } else {
-            //default to descending
+        case DESCENDING:
             return reviewList.sortByDescending(sortCriterionFunction);
+        case UNKNOWN:
+        default:
+            throw new InvalidArgumentException("Invalid sort order!");
         }
     }
 
+    /**
+     * Returns a function that extracts the sort criterion value from a review.
+     * @param sortCriterion the sort criterion
+     * @return a function that extracts the sort criterion value from a review
+     */
     private static Function<Review, Double> getSortCriterionFunction(SortCriterion sortCriterion) {
         Function<Review, Double> sortCriterionFunction;
 
