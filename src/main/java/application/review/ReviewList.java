@@ -212,7 +212,7 @@ public class ReviewList {
      * @param sortCriterion the sort criterion
      * @return a function that extracts the sort criterion value from a review
      */
-    private static Function<Review, Double> getSortCriterionFunction(SortCriterion sortCriterion) {
+    private Function<Review, Double> getSortCriterionFunction(SortCriterion sortCriterion) {
         Function<Review, Double> sortCriterionFunction;
 
         switch (sortCriterion) {
@@ -246,6 +246,14 @@ public class ReviewList {
      */
     public int size() {
         return reviews.size();
+    }
+
+    /**
+     * Returns whether the list is empty.
+     * @return true if the list is empty, false otherwise
+     */
+    public boolean isEmpty() {
+        return reviews.isEmpty();
     }
 
     /**

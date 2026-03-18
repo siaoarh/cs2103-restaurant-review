@@ -44,6 +44,10 @@ public class SortReviewsCommand extends Command {
             ReviewList reviews,
             Storage storage
     ) throws InvalidArgumentException {
+        if (reviews.isEmpty()) {
+            return "No reviews to sort!";
+        }
+
         ReviewList sortedReviewList = reviews.sort(sortCriterion, sortOrder, reviews);
 
         return String.format("""
