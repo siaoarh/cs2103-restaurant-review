@@ -97,23 +97,6 @@ public class ArgumentParser {
     }
 
     /**
-     * Return a Rating based on the three scores.
-     *
-     * @param foodScore the food score
-     * @param cleanlinessScore the cleanliness score
-     * @param serviceScore the service score
-     * @return a Rating object
-     * @throws InvalidArgumentException if any score is not a number
-     */
-    public static Rating toRating(
-            Double foodScore,
-            Double cleanlinessScore,
-            Double serviceScore
-    ) throws InvalidArgumentException {
-        return new Rating(foodScore, cleanlinessScore, serviceScore);
-    }
-
-    /**
      * Returns a set of Tags based on a string of tags. An empty set is returned if the string is null or empty.
      *
      * @param tagsAsString the string of tags
