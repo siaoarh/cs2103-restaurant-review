@@ -9,9 +9,9 @@ import application.exception.MissingArgumentException;
 import application.review.Rating;
 
 /**
- * Utility class containing generic methods for parsing inputs.
+ * ArgumentParser class containing generic methods for parsing inputs.
  */
-public class Utility {
+public class ArgumentParser {
     /**
      * Returns the specified input as an array of length 2, after splitting with a specified string as the delimiter.
      *
@@ -67,31 +67,27 @@ public class Utility {
     }
 
     /**
-     * Returns a rating as a float after extracting the argument from the delimiter-argument pair.
+     * Returns a score as a float after extracting the argument from the delimiter-argument pair.
      *
-     * @param ratingAsString string containing the rating
-     * @return a Rating denoting the rating
+     * @param scoreAsString string containing the score
+     * @return a float denoting the score
      * @throws MissingArgumentException if the argument is an empty string or null
      * @throws InvalidArgumentException if the argument is not a number or multiple numbers are specified
      */
-    public static Rating toRating(String ratingAsString) throws MissingArgumentException, InvalidArgumentException {
-        if (isInvalidString(ratingAsString)) {
-            throw new MissingArgumentException("No rating given!");
+    public static double toDouble(String scoreAsString) throws MissingArgumentException, InvalidArgumentException {
+        if (isInvalidString(scoreAsString)) {
+            throw new MissingArgumentException("No score given!");
         }
 
-        float rating;
+        double score;
 
         try {
-            rating = Float.parseFloat(ratingAsString);
+            score = Double.parseDouble(scoreAsString);
         } catch (NumberFormatException e) {
-            throw new InvalidArgumentException("Rating provided is invalid!");
+            throw new InvalidArgumentException("Score provided is not a valid number!");
         }
 
-        if (!Rating.isValidRating(rating)) {
-            throw new InvalidArgumentException("Rating provided must be within range of 0 to 5!");
-        }
-
-        return new Rating(rating);
+        return score;
     }
 
     /**
@@ -101,7 +97,7 @@ public class Utility {
      * @throws MissingArgumentException if the date string is empty or null
      * @throws InvalidArgumentException if the date string is not in the correct format
      */
-    public static LocalDate parseDate(String dateAsString) throws MissingArgumentException, InvalidArgumentException {
+    public static LocalDate toDate(String dateAsString) throws MissingArgumentException, InvalidArgumentException {
         if (isInvalidString(dateAsString)) {
             throw new MissingArgumentException("No date provided!"
                     + "Expected format: YYYY-MM-DD");

@@ -16,9 +16,9 @@ import application.exception.MissingArgumentException;
 import application.review.Rating;
 
 /**
- * Tests for Utility class.
+ * Tests for ArgumentParser class.
  */
-public class UtilityTest {
+public class ArgumentParserTest {
     private String testString;
 
     /**
@@ -43,7 +43,7 @@ public class UtilityTest {
     @Test
     public void splitIntoPair_validInput_success() {
         testString = "add name /rating 5";
-        String[] result = Utility.splitIntoPair(testString, " ");
+        String[] result = ArgumentParser.splitIntoPair(testString, " ");
         assertEquals("add", result[0]);
         assertEquals("name /rating 5", result[1]);
     }
@@ -54,7 +54,7 @@ public class UtilityTest {
     @Test
     public void splitIntoPair_noDelimiter_success() {
         testString = "exit";
-        String[] result = Utility.splitIntoPair(testString, " ");
+        String[] result = ArgumentParser.splitIntoPair(testString, " ");
         assertEquals("exit", result[0]);
         assertEquals("", result[1]);
     }
@@ -64,10 +64,10 @@ public class UtilityTest {
      */
     @Test
     public void isInvalidString_nullOrEmpty_success() {
-        assertTrue(Utility.isInvalidString(null));
-        assertTrue(Utility.isInvalidString(""));
-        assertTrue(Utility.isInvalidString("   "));
-        assertFalse(Utility.isInvalidString("valid"));
+        assertTrue(ArgumentParser.isInvalidString(null));
+        assertTrue(ArgumentParser.isInvalidString(""));
+        assertTrue(ArgumentParser.isInvalidString("   "));
+        assertFalse(ArgumentParser.isInvalidString("valid"));
     }
 
     /**
@@ -77,7 +77,7 @@ public class UtilityTest {
     @Test
     public void toInt_validNumber_success() throws Exception {
         testString = "5";
-        assertEquals(5, Utility.toInt(testString));
+        assertEquals(5, ArgumentParser.toInt(testString));
     }
 
     /**
@@ -86,7 +86,7 @@ public class UtilityTest {
     @Test
     public void toInt_invalidNumber_throwsException() {
         testString = "abc";
-        assertThrows(InvalidArgumentException.class, () -> Utility.toInt(testString));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt(testString));
     }
 
     /**
@@ -95,7 +95,7 @@ public class UtilityTest {
     @Test
     public void toInt_empty_throwsException() {
         testString = "";
-        assertThrows(MissingArgumentException.class, () -> Utility.toInt(testString));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt(testString));
     }
 
     /**
@@ -104,7 +104,7 @@ public class UtilityTest {
     @Test
     public void toInt_multipleNumbers_throwsException() {
         testString = "1 2";
-        assertThrows(InvalidArgumentException.class, () -> Utility.toInt(testString));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt(testString));
     }
 
     /**
@@ -114,7 +114,7 @@ public class UtilityTest {
     @Test
     public void toRating_validRating_success() throws Exception {
         testString = "4.5";
-        Rating rating = Utility.toRating(testString);
+        Rating rating = ArgumentParser.toRating(testString);
         assertEquals(4.5f, rating.getRatingValue());
     }
 
@@ -124,7 +124,7 @@ public class UtilityTest {
     @Test
     public void toRating_invalidFormat_throwsException() {
         testString = "abc";
-        assertThrows(InvalidArgumentException.class, () -> Utility.toRating(testString));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toRating(testString));
     }
 
     /**
@@ -133,7 +133,7 @@ public class UtilityTest {
     @Test
     public void toRating_empty_throwsException() {
         testString = "";
-        assertThrows(MissingArgumentException.class, () -> Utility.toRating(testString));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toRating(testString));
     }
 
     /**
@@ -141,8 +141,8 @@ public class UtilityTest {
      */
     @Test
     public void toRating_invalidRange_throwsException() {
-        assertThrows(InvalidArgumentException.class, () -> Utility.toRating("6.0"));
-        assertThrows(InvalidArgumentException.class, () -> Utility.toRating("-1.0"));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toRating("6.0"));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toRating("-1.0"));
     }
 
     /**
@@ -152,7 +152,7 @@ public class UtilityTest {
     @Test
     public void parseDate_validDate_success() throws Exception {
         testString = "2023-10-27";
-        LocalDate date = Utility.parseDate(testString);
+        LocalDate date = ArgumentParser.parseDate(testString);
         assertEquals(LocalDate.of(2023, 10, 27), date);
     }
 
@@ -162,7 +162,7 @@ public class UtilityTest {
     @Test
     public void parseDate_invalidFormat_throwsException() {
         testString = "27-10-2023";
-        assertThrows(InvalidArgumentException.class, () -> Utility.parseDate(testString));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.parseDate(testString));
     }
 
     /**
@@ -171,7 +171,7 @@ public class UtilityTest {
     @Test
     public void parseDate_empty_throwsException() {
         testString = "";
-        assertThrows(MissingArgumentException.class, () -> Utility.parseDate(testString));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.parseDate(testString));
     }
 
     /**
@@ -180,6 +180,6 @@ public class UtilityTest {
     @Test
     public void formatDate_validDate_success() {
         LocalDate date = LocalDate.of(2023, 10, 27);
-        assertEquals("Fri, 27 Oct 2023", Utility.formatDate(date));
+        assertEquals("Fri, 27 Oct 2023", ArgumentParser.formatDate(date));
     }
 }

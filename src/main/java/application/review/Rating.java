@@ -1,5 +1,7 @@
 package application.review;
 
+import application.exception.InvalidArgumentException;
+
 /**
  * Represents the structured ratings for a dining experience.
  *
@@ -7,12 +9,12 @@ package application.review;
  * An overall rating can be derived from these category ratings.
  */
 public class Rating {
-    public static final int RATING_MIN = 1;
-    public static final int RATING_MAX = 5;
+    public static final double RATING_MIN = 1.0;
+    public static final double RATING_MAX = 5.0;
 
-    private final int foodScore;
-    private final int cleanlinessScore;
-    private final int serviceScore;
+    private final double foodScore;
+    private final double cleanlinessScore;
+    private final double serviceScore;
 
     /**
      * Constructs a {@code Rating} with scores for food, cleanliness, and service.
@@ -20,14 +22,14 @@ public class Rating {
      * @param foodScore the food score
      * @param cleanlinessScore the cleanliness rating
      * @param serviceScore the service rating
-     * @throws IllegalArgumentException if any rating is invalid
+     * @throws InvalidArgumentException if any rating is invalid
      */
-    public Rating(int foodScore, int cleanlinessScore, int serviceScore) throws IllegalArgumentException {
+    public Rating(double foodScore, double cleanlinessScore, double serviceScore) throws InvalidArgumentException {
         if (!isValidScore(foodScore)
                 || !isValidScore(cleanlinessScore)
                 || !isValidScore(serviceScore)) {
-            throw new IllegalArgumentException(
-                    "All ratings must be integers between " + RATING_MIN + " and " + RATING_MAX + ".");
+            throw new InvalidArgumentException(
+                    "All ratings must be numbers between " + RATING_MIN + " and " + RATING_MAX + ".");
         }
 
         this.foodScore = foodScore;
@@ -42,7 +44,7 @@ public class Rating {
      * @return {@code true} if the rating is between 1 and 5 inclusive,
      *         {@code false} otherwise
      */
-    public static boolean isValidScore(int score) {
+    public static boolean isValidScore(double score) {
         return score >= RATING_MIN && score <= RATING_MAX;
     }
 
@@ -51,7 +53,7 @@ public class Rating {
      *
      * @return the food score
      */
-    public int getFoodScore() {
+    public double getFoodScore() {
         return foodScore;
     }
 
@@ -60,7 +62,7 @@ public class Rating {
      *
      * @return the cleanliness score
      */
-    public int getCleanlinessScore() {
+    public double getCleanlinessScore() {
         return cleanlinessScore;
     }
 
@@ -69,7 +71,7 @@ public class Rating {
      *
      * @return the service score
      */
-    public int getServiceScore() {
+    public double getServiceScore() {
         return serviceScore;
     }
 
@@ -90,7 +92,7 @@ public class Rating {
     @Override
     public String toString() {
         return String.format(
-                "Food: %d | Cleanliness: %d | Service: %d | Overall: %.1f",
+                "Food: %.1f | Cleanliness: %.1f | Service: %.1f | Overall: %.1f",
                 getFoodScore(),
                 getCleanlinessScore(),
                 getServiceScore(),

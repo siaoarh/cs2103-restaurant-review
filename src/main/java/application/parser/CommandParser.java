@@ -23,7 +23,7 @@ public class CommandParser {
      * @return a command containing its respective arguments
      */
     public static Command getCommand(String input) {
-        String[] splitInput = Utility.splitIntoPair(input, " ");
+        String[] splitInput = ArgumentParser.splitIntoPair(input, " ");
 
         CommandType commandType = CommandType.getCommandType(splitInput[0].toLowerCase());
 

@@ -1,6 +1,6 @@
 package application.command;
 
-import application.parser.Utility;
+import application.parser.ArgumentParser;
 
 /**
  * Enum representing the different types of commands.
@@ -30,7 +30,7 @@ public enum CommandType {
      * @return the command type of the input
      */
     public static CommandType getCommandType(String input) {
-        if (Utility.isInvalidString(input)) {
+        if (ArgumentParser.isInvalidString(input)) {
             return UNKNOWN;
         }
 

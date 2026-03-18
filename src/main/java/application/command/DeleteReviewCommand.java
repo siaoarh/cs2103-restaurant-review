@@ -5,7 +5,7 @@ import java.util.Set;
 
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
-import application.parser.Utility;
+import application.parser.ArgumentParser;
 import application.review.Review;
 import application.review.ReviewList;
 import application.storage.Storage;
@@ -36,7 +36,7 @@ public class DeleteReviewCommand extends Command {
     @Override
     public String execute(ReviewList reviewList, Storage storage)
             throws MissingArgumentException, InvalidArgumentException {
-        int index = Utility.toInt(commandArgs.get("/default"));
+        int index = ArgumentParser.toInt(commandArgs.get("/default"));
         Review review = reviewList.removeReview(index);
 
         return String.format("%s\ndeleted!", review);

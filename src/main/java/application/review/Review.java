@@ -1,5 +1,7 @@
 package application.review;
 
+import application.exception.InvalidArgumentException;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class Review {
     private boolean isResolved;
 
     /**
-     * Constructs a {@code Review} with the specified review body, rating and tags.
+     * Constructs a {@code Review} with the specified review body, rating, and tags.
      * <p>
      * The review is created with an unresolved status.
      * </p>
@@ -26,14 +28,14 @@ public class Review {
      * @param reviewBody the written review content
      * @param rating the structured rating for the review
      * @param tags the set of tags associated with the review
-     * @throws IllegalArgumentException if the review body is null or blank
+     * @throws InvalidArgumentException if the review body is null or blank
      */
-    public Review(String reviewBody, Rating rating, Set<Tag> tags) throws IllegalArgumentException {
+    public Review(String reviewBody, Rating rating, Set<Tag> tags) throws InvalidArgumentException {
         if (reviewBody == null || reviewBody.isBlank()) {
-            throw new IllegalArgumentException("Review body cannot be null or blank.");
+            reviewBody = ""; //allow empty review body
         }
         if (rating == null) {
-            throw new IllegalArgumentException("Rating cannot be null.");
+            throw new InvalidArgumentException("Rating cannot be null.");
         }
 
         this.reviewBody = reviewBody.trim();
@@ -54,7 +56,7 @@ public class Review {
      */
     public Review(String reviewBody, Rating rating) throws IllegalArgumentException {
         if (reviewBody == null || reviewBody.isBlank()) {
-            throw new IllegalArgumentException("Review body cannot be null or blank.");
+            reviewBody = ""; //allow empty review body
         }
         if (rating == null) {
             throw new IllegalArgumentException("Rating cannot be null.");
