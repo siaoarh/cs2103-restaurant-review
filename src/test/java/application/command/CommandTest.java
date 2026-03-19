@@ -213,6 +213,12 @@ public class CommandTest {
     }
 
     @Test
+    public void exitCommand_execute_success() throws InvalidArgumentException, IOException {
+        Command cmd = new ExitCommand();
+        assertEquals("Goodbye!", cmd.execute(reviewList, storage));
+    }
+
+    @Test
     public void resolveReviewCommand_execute_success() throws InvalidArgumentException, MissingArgumentException {
         addReviewCommand_execute_success(); // adds 1 review, index 1
         
