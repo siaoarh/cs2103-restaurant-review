@@ -75,22 +75,28 @@ public class ReviewList {
      * Marks the review at the specified 1-based index as resolved.
      *
      * @param index the 1-based index of the review
+     * @return the marked review
      * @throws InvalidArgumentException if the index is invalid
      */
-    public void markResolved(int index) throws InvalidArgumentException {
+    public Review markResolved(int index) throws InvalidArgumentException {
         validateIndex(index);
-        reviews.get(index - 1).markResolved();
+        Review review = reviews.get(index - 1);
+        review.markResolved();
+        return review;
     }
 
     /**
      * Marks the review at the specified 1-based index as outstanding.
      *
      * @param index the 1-based index of the review
+     * @return the marked review
      * @throws InvalidArgumentException if the index is invalid
      */
-    public void markOutstanding(int index) throws InvalidArgumentException {
+    public Review markOutstanding(int index) throws InvalidArgumentException {
         validateIndex(index);
-        reviews.get(index - 1).markOutstanding();
+        Review review = reviews.get(index - 1);
+        review.markOutstanding();
+        return review;
     }
 
     /**
