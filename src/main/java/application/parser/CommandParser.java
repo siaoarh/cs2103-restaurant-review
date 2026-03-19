@@ -13,8 +13,10 @@ import application.command.DeleteTagsCommand;
 import application.command.ExitCommand;
 import application.command.FilterReviewsCommand;
 import application.command.ListReviewsCommand;
+import application.command.ResolveReviewCommand;
 import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
+import application.command.UnresolveReviewCommand;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 
@@ -66,9 +68,17 @@ public class CommandParser {
         case LIST:
             command = new ListReviewsCommand();
             break;
+        case RESOLVE:
+            arguments = splitIntoArguments(ResolveReviewCommand.DELIMITERS, splitInput[1]);
+            command = new ResolveReviewCommand(arguments);
+            break;
         case SORT:
             arguments = splitIntoArguments(SortReviewsCommand.DELIMITERS, splitInput[1]);
             command = new SortReviewsCommand(arguments);
+            break;
+        case UNRESOLVE:
+            arguments = splitIntoArguments(UnresolveReviewCommand.DELIMITERS, splitInput[1]);
+            command = new UnresolveReviewCommand(arguments);
             break;
         case UNKNOWN:
         default:

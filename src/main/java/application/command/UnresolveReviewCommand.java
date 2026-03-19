@@ -10,28 +10,25 @@ import application.storage.Storage;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Class representing a command to resolve a review.
- */
-public class ResolveReviewCommand extends Command {
+public class UnresolveReviewCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default");
     private final int index;
 
     /**
-     * Constructor for ResolveReviewCommand class.
+     * Constructor for UnresolveReviewCommand class.
      *
      * @param commandArgs the arguments of the command
      * @throws InvalidArgumentException if the index is not a number
      * @throws MissingArgumentException if the index is missing
      */
-    public ResolveReviewCommand(Map<String, String> commandArgs)
+    public UnresolveReviewCommand(Map<String, String> commandArgs)
             throws InvalidArgumentException, MissingArgumentException {
         String indexAsString = commandArgs.get("/default");
         this.index = ArgumentParser.toInt(indexAsString);
     }
 
     /**
-     * Executes the command to resolve a review in the list.
+     * Executes the command to unresolve a review in the list.
      *
      * @param reviews the list of reviews
      * @param storage the storage object
@@ -43,8 +40,8 @@ public class ResolveReviewCommand extends Command {
             ReviewList reviews,
             Storage storage
     ) throws InvalidArgumentException {
-        Review review = reviews.markResolved(index);
+        Review review = reviews.markOutstanding(index);
 
-        return String.format("%s\nmarked as resolved!", review);
+        return String.format("%s\nmarked as outstanding!", review);
     }
 }

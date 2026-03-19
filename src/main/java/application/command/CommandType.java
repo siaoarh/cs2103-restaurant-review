@@ -13,6 +13,8 @@ public enum CommandType {
     DELETE("delete"),
     FILTER("filter"),
     LIST("list"),
+    RESOLVE("resolve"),
+    UNRESOLVE("unresolve"),
     SORT("sort"),
     UNKNOWN("unknown");
 
