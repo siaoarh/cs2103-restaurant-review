@@ -1,8 +1,8 @@
 package application.review;
 
-import application.parser.ArgumentParser;
-
 import java.util.function.Function;
+
+import application.parser.ArgumentParser;
 
 /**
  * Enum representing the different criteria for ReviewList operations.
@@ -20,6 +20,7 @@ public enum Criterion {
 
     /**
      * Constructor for Criterion enum.
+     *
      * @param criterionString the string representation of the criterion
      * @param criterionFunction the function to extract the criterion value from a review
      */
@@ -34,6 +35,7 @@ public enum Criterion {
 
     /**
      * Returns the criterion corresponding to the input string.
+     *
      * @param criterionString the string representation of the criterion
      * @return the criterion corresponding to the input string
      */
@@ -53,6 +55,7 @@ public enum Criterion {
 
     /**
      * Returns the string representation of the criterion.
+     *
      * @return the string representation of the criterion
      */
     @Override

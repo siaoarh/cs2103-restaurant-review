@@ -1,14 +1,18 @@
 package application.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
 import application.condition.Condition;
 import application.condition.EqualsToCondition;
 import application.condition.GreaterThanCondition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
-import application.review.Criterion;
-import org.junit.jupiter.api.Test;
-import java.util.Set;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ConditionParserTest {
 
@@ -17,12 +21,16 @@ public class ConditionParserTest {
         String input = "food == 4.0, service > 2";
         Set<Condition> conditions = ConditionParser.getConditions(input);
         assertEquals(2, conditions.size());
-        
+
         boolean foundEquals = false;
         boolean foundGreater = false;
         for (Condition c : conditions) {
-            if (c instanceof EqualsToCondition) foundEquals = true;
-            if (c instanceof GreaterThanCondition) foundGreater = true;
+            if (c instanceof EqualsToCondition) {
+                foundEquals = true;
+            }
+            if (c instanceof GreaterThanCondition) {
+                foundGreater = true;
+            }
         }
         assertTrue(foundEquals);
         assertTrue(foundGreater);

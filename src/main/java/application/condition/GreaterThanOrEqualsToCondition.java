@@ -9,6 +9,7 @@ import application.review.Review;
 public class GreaterThanOrEqualsToCondition extends Condition {
     /**
      * Constructor for a GreaterThanOrEqualsToCondition.
+     *
      * @param criterion the review criterion to compare
      * @param value the value to compare the criterion to
      */
@@ -17,10 +18,12 @@ public class GreaterThanOrEqualsToCondition extends Condition {
     }
 
     /**
-     * Checks if the criterion of the review is greater than or equal to the value of this condition.
+     * Checks if the criterion of the review is greater than or equal to the
+     * value of this condition.
+     *
      * @param review the review to check
-     * @return true if the criterion of the review is greater than or equal to the value of this condition,
-     * false otherwise
+     * @return true if the criterion of the review is greater than or equal to the
+     *     value of this condition, false otherwise
      */
     @Override
     public boolean isSatisfiedBy(Review review) {
@@ -29,6 +32,7 @@ public class GreaterThanOrEqualsToCondition extends Condition {
 
     /**
      * Returns a string representation of the condition.
+     *
      * @return a string representation of the condition
      */
     @Override

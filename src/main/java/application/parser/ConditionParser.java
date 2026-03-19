@@ -1,12 +1,19 @@
 package application.parser;
 
-import application.condition.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import application.condition.Condition;
+import application.condition.ConditionType;
+import application.condition.EqualsToCondition;
+import application.condition.GreaterThanCondition;
+import application.condition.GreaterThanOrEqualsToCondition;
+import application.condition.LessThanCondition;
+import application.condition.LessThanOrEqualsToCondition;
+import application.condition.NotEqualsToCondition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.review.Criterion;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * ConditionParser class containing methods for parsing conditions.

@@ -46,7 +46,7 @@ public class Rating {
                     String.format("Service Score must be numbers between %.1f and %.1f.", RATING_MIN, RATING_MAX)
             );
         }
-        
+
         this.foodScore = foodScore;
         this.cleanlinessScore = cleanlinessScore;
         this.serviceScore = serviceScore;

@@ -1,14 +1,16 @@
 package application.review;
 
-import application.condition.Condition;
-import application.exception.InvalidArgumentException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashSet;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import static org.junit.jupiter.api.Assertions.*;
+
+import application.exception.InvalidArgumentException;
 
 public class ReviewListTest {
     private ReviewList reviewList;
@@ -29,7 +31,7 @@ public class ReviewListTest {
         Review review3 = new Review("Review 3", new Rating(3.0, 3.0, 3.0));
         reviewList.addReview(review3);
         assertEquals(3, reviewList.size());
-        
+
         Review deleted = reviewList.deleteReview(3);
         assertEquals(review3, deleted);
         assertEquals(2, reviewList.size());
@@ -82,7 +84,8 @@ public class ReviewListTest {
 
     @Test
     public void sort_invalidOrder_throwsException() {
-        assertThrows(InvalidArgumentException.class, () -> reviewList.sort(Criterion.FOOD_SCORE, SortOrder.UNKNOWN, reviewList));
+        assertThrows(InvalidArgumentException.class, () ->
+                reviewList.sort(Criterion.FOOD_SCORE, SortOrder.UNKNOWN, reviewList));
     }
 
     @Test

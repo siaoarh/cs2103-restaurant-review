@@ -1,12 +1,12 @@
 package application.review;
 
-import application.parser.ArgumentParser;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import application.parser.ArgumentParser;
 
 /**
  * Represents a tag attached to a review for categorisation and filtering.
@@ -34,7 +34,7 @@ public record Tag(String tagName) {
      *
      * @param tagName the tag name to validate
      * @return {@code true} if the tag name is non-null and non-blank,
-     * {@code false} otherwise
+     *     {@code false} otherwise
      */
     private boolean isValidTagName(String tagName) {
         return tagName != null && !tagName.isBlank();

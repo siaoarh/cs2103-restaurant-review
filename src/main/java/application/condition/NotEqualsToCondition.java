@@ -9,6 +9,7 @@ import application.review.Review;
 public class NotEqualsToCondition extends Condition {
     /**
      * Constructor for a NotEqualsToCondition.
+     *
      * @param criterion the review criterion to compare
      * @param value the value to compare the criterion to
      */
@@ -19,7 +20,9 @@ public class NotEqualsToCondition extends Condition {
     /**
      * Checks if the criterion of the review is not equal to the value of this condition.
      * @param review the review to check
-     * @return true if the criterion of the review is not equal to the value of this condition,
+     *
+     * @return true if the criterion of the review is less than or equal to the
+     *     value of this condition, false otherwise
      */
     @Override
     public boolean isSatisfiedBy(Review review) {
@@ -28,6 +31,7 @@ public class NotEqualsToCondition extends Condition {
 
     /**
      * Returns a string representation of the condition.
+     *
      * @return a string representation of the condition
      */
     @Override

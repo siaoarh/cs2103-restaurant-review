@@ -18,6 +18,7 @@ public enum ConditionType {
 
     /**
      * Constructor for ConditionType enum.
+     *
      * @param conditionString the string representation of the condition
      */
     ConditionType(String conditionString) {
@@ -26,16 +27,17 @@ public enum ConditionType {
 
     /**
      * Returns the condition type corresponding to the input string.
+     *
      * @param conditionAsString the string representation of the condition
      * @return the condition type corresponding to the input string
      */
     public static ConditionType getConditionType(String conditionAsString) {
-        if(!ArgumentParser.isValidString(conditionAsString)) {
+        if (!ArgumentParser.isValidString(conditionAsString)) {
             return UNKNOWN;
         }
 
-        for(ConditionType type : ConditionType.values()) {
-            if(type.conditionString.equals(conditionAsString)) {
+        for (ConditionType type : ConditionType.values()) {
+            if (type.conditionString.equals(conditionAsString)) {
                 return type;
             }
         }
@@ -45,9 +47,11 @@ public enum ConditionType {
 
     /**
      * Returns the string representation of the condition.
+     *
      * @return the string representation of the condition
      */
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return conditionString;
     }
 }

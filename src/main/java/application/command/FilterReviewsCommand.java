@@ -1,5 +1,8 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.condition.Condition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
@@ -8,10 +11,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
-import java.util.Map;
-import java.util.Set;
-
-//filter /hastag /notag /min food service /minscore /max /maxscore /r /o
+/**
+ * Class representing a command to filter reviews.
+ */
 public class FilterReviewsCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of(
             "/hastag", //if a review contains the list of tags provided
@@ -24,6 +26,13 @@ public class FilterReviewsCommand extends Command {
     private final Set<Condition> filterConditions;
     private final Boolean isResolved;
 
+    /**
+     * Constructor for FilterReviewsCommand class.
+     *
+     * @param commandArgs the arguments of the command
+     * @throws InvalidArgumentException if any argument is in the wrong format
+     * @throws MissingArgumentException if a required argument is missing
+     */
     public FilterReviewsCommand(Map<String, String> commandArgs)
             throws InvalidArgumentException, MissingArgumentException {
         String tagsToIncludeAsString = commandArgs.get("/hastag");
@@ -65,7 +74,8 @@ public class FilterReviewsCommand extends Command {
                 %s""",
                 tagsToInclude.isEmpty() ? "None specified" : tagsToInclude,
                 tagsToExclude.isEmpty() ? "None specified" : tagsToExclude,
-                filterConditions.isEmpty() ? "None specified" : filterConditions.stream().filter(Condition::shouldDisplay).toList(),
+                filterConditions.isEmpty() ? "None specified" : filterConditions.stream()
+                        .filter(Condition::shouldDisplay).toList(),
                 isResolved == null ? "Not specified" : isResolved,
                 filteredReviews
         );

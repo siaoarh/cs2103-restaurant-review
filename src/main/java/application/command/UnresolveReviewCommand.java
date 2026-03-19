@@ -1,5 +1,8 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.parser.ArgumentParser;
@@ -7,9 +10,9 @@ import application.review.Review;
 import application.review.ReviewList;
 import application.storage.Storage;
 
-import java.util.Map;
-import java.util.Set;
-
+/**
+ * Class representing a command to unresolve a review.
+ */
 public class UnresolveReviewCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default");
     private final int index;

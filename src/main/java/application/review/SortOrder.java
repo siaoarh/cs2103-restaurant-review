@@ -14,6 +14,7 @@ public enum SortOrder {
 
     /**
      * Constructor for SortOrder enum.
+     *
      * @param sortOrderString the string representation of the sort order
      */
     SortOrder(String sortOrderString) {
@@ -22,6 +23,7 @@ public enum SortOrder {
 
     /**
      * Returns the sort order corresponding to the input string.
+     *
      * @param sortOrderString the string representation of the sort order
      * @return the sort order corresponding to the input string
      */
@@ -41,6 +43,7 @@ public enum SortOrder {
 
     /**
      * Returns the string representation of the sort order.
+     *
      * @return the string representation of the sort order
      */
     @Override

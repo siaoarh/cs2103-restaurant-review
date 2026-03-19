@@ -1,11 +1,11 @@
 package application.review;
 
-import application.exception.InvalidArgumentException;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import application.exception.InvalidArgumentException;
 
 /**
  * Represents a single anonymous customer review.
@@ -146,9 +146,10 @@ public class Review {
     }
 
     /**
-     * Returns whether this review contains all of the specified tags.
+     * Returns whether this review contains all the specified tags.
+     *
      * @param tagsToMatch the set of tags to match
-     * @return true if this review contains all of the specified tags, false otherwise
+     * @return true if this review contains all the specified tags, false otherwise
      */
     public boolean containsAllMatchingTags(Set<Tag> tagsToMatch) {
         return tags.containsAll(tagsToMatch);
@@ -156,6 +157,7 @@ public class Review {
 
     /**
      * Returns whether this review contains any of the specified tags.
+     *
      * @param tagsToMatch the set of tags to match
      * @return true if this review contains any of the specified tags, false otherwise
      */

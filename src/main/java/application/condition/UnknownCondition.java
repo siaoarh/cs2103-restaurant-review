@@ -15,6 +15,7 @@ public class UnknownCondition extends Condition {
 
     /**
      * Always returns false.
+     *
      * @return false
      */
     @Override
@@ -24,6 +25,7 @@ public class UnknownCondition extends Condition {
 
     /**
      * Always returns false.
+     *
      * @param review the review to check
      * @return false
      */
@@ -34,6 +36,7 @@ public class UnknownCondition extends Condition {
 
     /**
      * Returns a string representation of the unknown condition.
+     *
      * @return a string representation of the unknown condition
      */
     @Override

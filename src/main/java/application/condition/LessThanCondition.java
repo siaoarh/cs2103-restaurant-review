@@ -9,6 +9,7 @@ import application.review.Review;
 public class LessThanCondition extends Condition {
     /**
      * Constructor for a LessThanCondition.
+     *
      * @param criterion the review criterion to compare
      * @param value the value to compare the criterion to
      */
@@ -17,10 +18,12 @@ public class LessThanCondition extends Condition {
     }
 
     /**
-     * Checks if the criterion of the review is less than the value of this condition.
+     * Checks if the criterion of the review is less than the value of this
+     * condition.
+     *
      * @param review the review to check
-     * @return true if the criterion of the review is less than the value of this condition,
-     * false otherwise
+     * @return true if the criterion of the review is less than the value of this
+     *     condition, false otherwise
      */
     @Override
     public boolean isSatisfiedBy(Review review) {
@@ -29,6 +32,7 @@ public class LessThanCondition extends Condition {
 
     /**
      * Returns a string representation of the condition.
+     *
      * @return a string representation of the condition
      */
     @Override

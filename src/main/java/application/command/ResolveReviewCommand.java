@@ -1,14 +1,14 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.parser.ArgumentParser;
 import application.review.Review;
 import application.review.ReviewList;
 import application.storage.Storage;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class representing a command to resolve a review.

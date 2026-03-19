@@ -12,6 +12,7 @@ public abstract class Condition {
 
     /**
      * Constructor for a condition.
+     *
      * @param criterion the criterion to compare the review against
      * @param value the value to compare the criterion to
      */
@@ -27,6 +28,7 @@ public abstract class Condition {
 
     /**
      * Returns whether the condition should be displayed.
+     *
      * @return true if the condition should be displayed, false otherwise
      */
     public boolean shouldDisplay() {
@@ -35,6 +37,7 @@ public abstract class Condition {
 
     /**
      * Abstract method to determine if the condition is satisfied by a review.
+     *
      * @param review the review to check
      * @return true if the condition is satisfied, false otherwise
      */

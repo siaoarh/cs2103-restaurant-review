@@ -1,13 +1,13 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.exception.InvalidArgumentException;
 import application.review.Criterion;
 import application.review.ReviewList;
 import application.review.SortOrder;
 import application.storage.Storage;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Class representing a command to sort reviews.

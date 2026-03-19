@@ -33,7 +33,7 @@ public class CommandParser {
      * @throws InvalidArgumentException if the command has an invalid argument
      */
     public static Command getCommand(String input)
-        throws MissingArgumentException, InvalidArgumentException {
+            throws MissingArgumentException, InvalidArgumentException {
         String[] splitInput = ArgumentParser.splitIntoPair(input.trim(), " ");
 
         CommandType commandType = CommandType.getCommandType(splitInput[0].toLowerCase());

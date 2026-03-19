@@ -1,5 +1,8 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.parser.ArgumentParser;
@@ -8,9 +11,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
-import java.util.Map;
-import java.util.Set;
-
+/**
+ * Class representing a command to delete tags from a review.
+ */
 public class DeleteTagsCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
     private final int index;

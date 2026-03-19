@@ -1,10 +1,23 @@
 package application.parser;
 
-import application.command.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import application.command.AddReviewCommand;
+import application.command.AddTagsCommand;
+import application.command.Command;
+import application.command.DeleteReviewCommand;
+import application.command.DeleteTagsCommand;
+import application.command.ExitCommand;
+import application.command.FilterReviewsCommand;
+import application.command.ListReviewsCommand;
+import application.command.ResolveReviewCommand;
+import application.command.SortReviewsCommand;
+import application.command.UnknownCommand;
+import application.command.UnresolveReviewCommand;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandParserTest {
 
@@ -29,7 +42,8 @@ public class CommandParserTest {
 
     @Test
     public void getCommand_addReview_success() throws InvalidArgumentException, MissingArgumentException {
-        Command command = CommandParser.getCommand("review Great food! /food 5 /clean 4 /service 5 /tag Good Food");
+        Command command = CommandParser.getCommand(
+                "review Great food! /food 5 /clean 4 /service 5 /tag Good Food");
         assertTrue(command instanceof AddReviewCommand);
     }
 
@@ -41,7 +55,8 @@ public class CommandParserTest {
 
     @Test
     public void getCommand_filter_success() throws InvalidArgumentException, MissingArgumentException {
-        Command command = CommandParser.getCommand("filter /hastag Tag1 /notag Tag2 /condition food > 3");
+        Command command = CommandParser.getCommand(
+                "filter /hastag Tag1 /notag Tag2 /condition food > 3");
         assertTrue(command instanceof FilterReviewsCommand);
     }
 
@@ -64,19 +79,22 @@ public class CommandParserTest {
     }
 
     @Test
-    public void getCommand_resolve_returnsResolveReviewCommand() throws InvalidArgumentException, MissingArgumentException {
+    public void getCommand_resolve_returnsResolveReviewCommand()
+            throws InvalidArgumentException, MissingArgumentException {
         Command command = CommandParser.getCommand("resolve 1");
         assertTrue(command instanceof ResolveReviewCommand);
     }
 
     @Test
-    public void getCommand_unresolve_returnsUnresolveReviewCommand() throws InvalidArgumentException, MissingArgumentException {
+    public void getCommand_unresolve_returnsUnresolveReviewCommand()
+            throws InvalidArgumentException, MissingArgumentException {
         Command command = CommandParser.getCommand("unresolve 1");
         assertTrue(command instanceof UnresolveReviewCommand);
     }
 
     @Test
-    public void getCommand_emptyInput_returnsUnknownCommand() throws InvalidArgumentException, MissingArgumentException {
+    public void getCommand_emptyInput_returnsUnknownCommand()
+            throws InvalidArgumentException, MissingArgumentException {
         assertTrue(CommandParser.getCommand("") instanceof UnknownCommand);
         assertTrue(CommandParser.getCommand("   ") instanceof UnknownCommand);
     }
