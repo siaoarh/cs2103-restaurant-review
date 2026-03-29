@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import application.auth.AuthManager;
 import application.command.Command;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
@@ -77,7 +78,7 @@ public class MealMeter {
     public CommandResult handleInput(String userInput) {
         try {
             Command command = CommandParser.getCommand(userInput);
-            String output = command.execute(reviewList, storage);
+            String output = command.execute(reviewList, storage, new AuthManager("hello"));
             return new CommandResult(output, command.isTerminatingCommand());
         } catch (InvalidArgumentException | MissingArgumentException | IOException e) {
             return new CommandResult(e.getMessage(), false);

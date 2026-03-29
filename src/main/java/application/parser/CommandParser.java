@@ -13,6 +13,7 @@ import application.command.DeleteTagsCommand;
 import application.command.ExitCommand;
 import application.command.FilterReviewsCommand;
 import application.command.ListReviewsCommand;
+import application.command.LoginCommand;
 import application.command.ResolveReviewCommand;
 import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
@@ -67,6 +68,12 @@ public class CommandParser {
             break;
         case LIST:
             command = new ListReviewsCommand();
+            break;
+        case LOGIN:
+            arguments = splitIntoArguments(LoginCommand.DELIMITERS, splitInput[1]);
+            command = new LoginCommand(arguments);
+            break;
+        case LOGOUT:
             break;
         case RESOLVE:
             arguments = splitIntoArguments(ResolveReviewCommand.DELIMITERS, splitInput[1]);
