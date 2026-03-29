@@ -45,6 +45,7 @@ public class LoginCommand extends Command{
         if (manager.isOwnerAuthenticated()) {
             return "You are already logged in!";
         }
+
         boolean isLoggedIn = manager.authenticateOwner(password);
         return isLoggedIn ? "Successfully logged in!" : "Incorrect password!";
     }

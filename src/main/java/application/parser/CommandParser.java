@@ -14,6 +14,7 @@ import application.command.ExitCommand;
 import application.command.FilterReviewsCommand;
 import application.command.ListReviewsCommand;
 import application.command.LoginCommand;
+import application.command.LogoutCommand;
 import application.command.ResolveReviewCommand;
 import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
@@ -74,6 +75,7 @@ public class CommandParser {
             command = new LoginCommand(arguments);
             break;
         case LOGOUT:
+            command = new LogoutCommand();
             break;
         case RESOLVE:
             arguments = splitIntoArguments(ResolveReviewCommand.DELIMITERS, splitInput[1]);
