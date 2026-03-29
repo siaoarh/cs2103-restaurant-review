@@ -1,6 +1,8 @@
 package application;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import application.command.Command;
 import application.exception.InvalidArgumentException;
@@ -8,6 +10,7 @@ import application.exception.MissingArgumentException;
 import application.parser.CommandParser;
 import application.review.ReviewList;
 import application.storage.Storage;
+import application.storage.StorageLoadResult;
 
 /**
  * Represents the core MealMeter application logic.
@@ -18,64 +21,68 @@ import application.storage.Storage;
 public class MealMeter {
     private final Storage storage;
     private final ReviewList reviewList;
+    private final boolean hasStorageLoadFailure;
+    private final List<String> startupStorageWarnings;
 
     /**
      * Constructs a MealMeter application and loads stored reviews.
      */
     public MealMeter() {
         this.storage = new Storage();
-        this.reviewList = loadReviews();
-    }
 
-    /**
-     * Returns the welcome message shown at application startup.
-     *
-     * @return the welcome message
-     */
-    public String getWelcomeMessage() {
-        return "Welcome to MealMeter.\n"
-                + "Enter a command to manage customer reviews.\n"
-                + "Type 'exit' to leave the application.";
-    }
+        ReviewList loadedReviews;
+        boolean loadFailure;
+        List<String> storageWarnings;
 
-    /**
-     * Returns the response for a user input command.
-     *
-     * @param userInput the raw user input
-     * @return the resulting output message
-     */
-    public String getResponse(String userInput) {
         try {
-            Command command = CommandParser.getCommand(userInput);
-            return command.execute(reviewList, storage);
-        } catch (InvalidArgumentException | MissingArgumentException | IOException e) {
-            return e.getMessage();
-        } catch (Exception e) {
-            return "An unexpected error occurred: " + e.getMessage();
-        }
-    }
-
-    /**
-     * Returns whether the given input should terminate the application.
-     *
-     * @param userInput the raw user input
-     * @return true if the command is terminating, false otherwise
-     */
-    public boolean isExit(String userInput) {
-        try {
-            Command command = CommandParser.getCommand(userInput);
-            return command.isTerminatingCommand();
-        } catch (InvalidArgumentException | MissingArgumentException e) {
-            return false;
-        }
-    }
-
-    private ReviewList loadReviews() {
-        try {
-            return storage.loadReviews();
+            StorageLoadResult loadResult = storage.loadReviewsWithWarnings();
+            loadedReviews = loadResult.reviewList();
+            storageWarnings = loadResult.warnings();
+            loadFailure = false;
         } catch (IOException e) {
-            System.out.println("Warning: Failed to load reviews from storage. Starting with an empty list.");
-            return new ReviewList();
+            loadedReviews = new ReviewList();
+            storageWarnings = Collections.emptyList();
+            loadFailure = true;
+        }
+
+        this.reviewList = loadedReviews;
+        this.hasStorageLoadFailure = loadFailure;
+        this.startupStorageWarnings = storageWarnings;
+    }
+
+    /**
+     * Returns whether loading reviews from storage failed at startup.
+     *
+     * @return true if storage loading failed, false otherwise
+     */
+    public boolean hasStorageLoadFailure() {
+        return hasStorageLoadFailure;
+    }
+
+    /**
+     * Returns non-fatal storage warnings encountered during startup loading.
+     *
+     * @return immutable list of startup storage warnings
+     */
+    public List<String> getStartupStorageWarnings() {
+        return startupStorageWarnings;
+    }
+
+    /**
+     * Handles one user input command and returns the command result.
+     *
+     * @param userInput the raw user input
+     * @return the result containing output and termination status
+     */
+    public CommandResult handleInput(String userInput) {
+        try {
+            Command command = CommandParser.getCommand(userInput);
+            String output = command.execute(reviewList, storage);
+            return new CommandResult(output, command.isTerminatingCommand());
+        } catch (InvalidArgumentException | MissingArgumentException | IOException e) {
+            return new CommandResult(e.getMessage(), false);
+        } catch (Exception e) {
+            return new CommandResult("An unexpected error occurred: " + e.getMessage(), false);
         }
     }
 }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * Ui class containing methods for interacting with the user.
  */
-public class Ui {
+public class Ui implements AutoCloseable {
     private final Scanner scanner;
 
     /**
@@ -13,6 +13,36 @@ public class Ui {
      */
     public Ui() {
         this.scanner = new Scanner(System.in);
+    }
+
+    /**
+     * Returns the welcome message shown at application startup.
+     *
+     * @return the welcome message
+     */
+    public String getWelcomeMessage() {
+        return "Welcome to MealMeter.\n"
+                + "Enter a command to manage customer reviews.\n"
+                + "Type 'exit' to leave the application.";
+    }
+
+    /**
+     * Returns the startup warning for storage loading failures.
+     *
+     * @return startup warning message
+     */
+    public String getStorageLoadWarningMessage() {
+        return "Warning: Failed to load reviews from storage. Starting with an empty list.";
+    }
+
+    /**
+     * Returns a formatted warning message for non-fatal storage loading issues.
+     *
+     * @param warning the warning details
+     * @return a display-ready warning message
+     */
+    public String formatStorageWarningMessage(String warning) {
+        return "Warning: " + warning;
     }
 
     /**
@@ -38,5 +68,13 @@ public class Ui {
      */
     public String readCommand() {
         return scanner.nextLine();
+    }
+
+    /**
+     * Closes UI resources.
+     */
+    @Override
+    public void close() {
+        scanner.close();
     }
 }

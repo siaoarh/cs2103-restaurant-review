@@ -7,20 +7,27 @@ import application.ui.Ui;
  */
 public class Main {
     public static void main(String[] args) {
-        Ui ui = new Ui();
-        MealMeter mealMeter = new MealMeter();
+        try (Ui ui = new Ui()) {
+            MealMeter mealMeter = new MealMeter();
 
-        ui.showMessage(mealMeter.getWelcomeMessage());
+            ui.showMessage(ui.getWelcomeMessage());
+            if (mealMeter.hasStorageLoadFailure()) {
+                ui.showMessage(ui.getStorageLoadWarningMessage());
+            }
+            for (String warning : mealMeter.getStartupStorageWarnings()) {
+                ui.showMessage(ui.formatStorageWarningMessage(warning));
+            }
 
-        boolean shouldContinue = true;
-        while (shouldContinue) {
-            ui.showPrompt();
-            String userInput = ui.readCommand();
+            boolean shouldContinue = true;
+            while (shouldContinue) {
+                ui.showPrompt();
+                String userInput = ui.readCommand();
 
-            String response = mealMeter.getResponse(userInput);
-            ui.showMessage(response);
+                CommandResult commandResult = mealMeter.handleInput(userInput);
+                ui.showMessage(commandResult.output());
 
-            shouldContinue = !mealMeter.isExit(userInput);
+                shouldContinue = !commandResult.shouldTerminate();
+            }
         }
     }
 }
