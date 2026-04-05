@@ -29,7 +29,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import application.review.Review;
-import application.review.SortOrder;
 import application.review.Tag;
 
 /**
@@ -142,12 +141,7 @@ public class OwnerPanel extends JPanel {
         JButton applyFilterButton = GuiComponentFactory.createGradientButton(
                 "Apply Filter", OCEAN_MID, OCEAN_LIGHT, Color.WHITE);
         applyFilterButton.setMaximumSize(new Dimension(150, 35));
-        applyFilterButton.addActionListener(e -> listener.onFilterApplied(
-                includeTagsField.getText().trim(),
-                excludeTagsField.getText().trim(),
-                (String) statusCombo.getSelectedItem(),
-                ((Number) minRatingSpinner.getValue()).doubleValue(),
-                conditionsField.getText().trim()));
+        applyFilterButton.addActionListener(e -> onApplyFilterClicked());
         filterPanel.add(applyFilterButton);
 
         panel.add(filterPanel);
@@ -247,6 +241,15 @@ public class OwnerPanel extends JPanel {
         actionPanel.add(logoutButton);
 
         return actionPanel;
+    }
+
+    private void onApplyFilterClicked() {
+        String includeTags = includeTagsField.getText().trim();
+        String excludeTags = excludeTagsField.getText().trim();
+        String status = (String) statusCombo.getSelectedItem();
+        double minRating = ((Number) minRatingSpinner.getValue()).doubleValue();
+        String conditions = conditionsField.getText().trim();
+        listener.onFilterApplied(includeTags, excludeTags, status, minRating, conditions);
     }
 
     /**

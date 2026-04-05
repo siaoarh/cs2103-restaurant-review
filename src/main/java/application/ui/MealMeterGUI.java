@@ -28,7 +28,7 @@ import application.storage.Storage;
  * Main GUI window for MealMeter. Coordinates between patron and owner panels,
  * delegates UI events to backend operations.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+// CHECKSTYLE.OFF: AbbreviationAsWordInName - "GUI" is an established acronym for this class
 public class MealMeterGUI extends JFrame implements
         PatronPanel.PatronPanelListener, OwnerPanel.OwnerPanelListener {
 
@@ -333,6 +333,8 @@ public class MealMeterGUI extends JFrame implements
             return Criterion.OVERALL_SCORE;
         }
     }
+
+    // CHECKSTYLE.ON: AbbreviationAsWordInName
 
     /**
      * Custom tabbed pane UI for highlight styling.
