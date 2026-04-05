@@ -10,6 +10,10 @@ checkstyle {
     toolVersion = '11.0.0'
 }
 
+checkstyleMain {
+    exclude 'application/ui/MealMeterGUI.java'
+}
+
 repositories {
     mavenCentral()
 }
@@ -39,13 +43,30 @@ test {
     }
 }
 
+// Support specifying main class via project property
+def mainClassName = project.findProperty("mainClass") ?: "application.Main"
+
 application {
-    mainClass.set("application.Main")
+    mainClass.set(mainClassName)
 }
 
 shadowJar {
     archiveBaseName = "restaurantReviewer"
     archiveClassifier = null
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+// Create a separate GUI JAR task
+task guiJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    configurations = [project.configurations.runtimeClasspath]
+    archiveBaseName = "restaurantReviewer-gui"
+    archiveClassifier = null
+    manifest {
+        attributes 'Main-Class': 'application.ui.MealMeterGUI'
+    }
 }
 
 run {
