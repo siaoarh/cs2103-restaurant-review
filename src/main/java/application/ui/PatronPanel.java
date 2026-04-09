@@ -11,9 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -27,11 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import application.exception.InvalidArgumentException;
-import application.review.Rating;
-import application.review.Review;
-import application.review.Tag;
 
 /**
  * Patron feedback submission panel for MealMeter GUI.
@@ -247,24 +241,14 @@ public class PatronPanel extends JPanel {
             return;
         }
 
-        try {
-            Rating rating = new Rating(food, clean, service);
-            String tagsCsv = String.join(",", pendingTags);
-            Set<Tag> tags = tagsCsv.isEmpty() ? new HashSet<>() : Tag.toTags(tagsCsv);
-            Review review = new Review(body, rating, tags);
+        String result = listener.onReviewSubmitted(body, food, clean, service,
+                Collections.unmodifiableList(pendingTags));
 
-            listener.onReviewSubmitted(review);
-
-            JOptionPane.showMessageDialog(this,
-                    "Review submitted successfully!\nOverall score: "
-                    + String.format("%.1f", rating.getOverallScore()),
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
-            clearForm();
-        } catch (InvalidArgumentException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Could not create review: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        if (result != null && !result.isEmpty()) {
+            JOptionPane.showMessageDialog(this, result, "Submit Review",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
+        clearForm();
     }
 
     private void clearForm() {
@@ -310,10 +294,16 @@ public class PatronPanel extends JPanel {
      */
     public interface PatronPanelListener {
         /**
-         * Called when a review is submitted.
+         * Called when a review is submitted. Returns output message to display.
          *
-         * @param review the submitted review
+         * @param body the review body text
+         * @param food the food score
+         * @param clean the cleanliness score
+         * @param service the service score
+         * @param tags the list of tag names
+         * @return the output message from the backend
          */
-        void onReviewSubmitted(Review review);
+        String onReviewSubmitted(String body, double food, double clean,
+                                 double service, List<String> tags);
     }
 }

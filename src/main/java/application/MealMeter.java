@@ -1,15 +1,25 @@
 package application;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import application.auth.AuthManager;
 import application.command.Command;
+import application.condition.Condition;
+import application.condition.GreaterThanOrEqualsToCondition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.parser.CommandParser;
+import application.parser.ConditionParser;
+import application.review.Criterion;
+import application.review.Review;
 import application.review.ReviewList;
+import application.review.SortOrder;
+import application.review.Tag;
 import application.storage.Storage;
 import application.storage.StorageLoadResult;
 
@@ -90,6 +100,24 @@ public class MealMeter {
     }
 
     /**
+     * Returns the current review list (read-only view for the UI layer).
+     *
+     * @return the review list
+     */
+    public ReviewList getReviewList() {
+        return reviewList;
+    }
+
+    /**
+     * Returns whether the owner is currently authenticated.
+     *
+     * @return true if the owner is authenticated, false otherwise
+     */
+    public boolean isOwnerAuthenticated() {
+        return authManager.isOwnerAuthenticated();
+    }
+
+    /**
      * Handles one user input command and returns the command result.
      *
      * @param userInput the raw user input
@@ -109,6 +137,114 @@ public class MealMeter {
             return new CommandResult(e.getMessage(), false);
         } catch (Exception e) {
             return new CommandResult("An unexpected error occurred: " + e.getMessage(), false);
+        }
+    }
+
+    /**
+     * Returns a filtered view of the master review list based on the given criteria.
+     *
+     * @param includeTags comma-separated tag names that must be present, or empty
+     * @param excludeTags comma-separated tag names that must be absent, or empty
+     * @param status "Resolved", "Outstanding", or any other value for no status filter
+     * @param minRating minimum overall score threshold (applied only when greater than 1.0)
+     * @param conditions raw condition expression passed to ConditionParser, or empty
+     * @return the filtered ReviewList; falls back to the full list if parsing fails
+     */
+    public ReviewList filterReviews(String includeTags, String excludeTags, String status,
+                                    double minRating, String conditions) {
+        try {
+            Set<Tag> includeSet = new HashSet<>(Arrays.asList(parseTags(includeTags)));
+            Set<Tag> excludeSet = new HashSet<>(Arrays.asList(parseTags(excludeTags)));
+
+            Boolean isResolved = null;
+            if ("Resolved".equals(status)) {
+                isResolved = true;
+            } else if ("Outstanding".equals(status)) {
+                isResolved = false;
+            }
+
+            Set<Condition> conditionSet = new HashSet<>();
+            if (minRating > 1.0) {
+                conditionSet.add(new GreaterThanOrEqualsToCondition(
+                        Criterion.OVERALL_SCORE, minRating));
+            }
+            if (!conditions.isEmpty()) {
+                conditionSet.addAll(ConditionParser.getConditions(conditions));
+            }
+
+            return reviewList.filter(includeSet, excludeSet, conditionSet, isResolved);
+        } catch (Exception e) {
+            return reviewList;
+        }
+    }
+
+    /**
+     * Returns the display list sorted by the given criterion label and order string.
+     *
+     * @param sortBy UI label: "Overall", "Food", "Cleanliness", "Service", or "Tag Count"
+     * @param sortOrder "Descending" for descending order, anything else for ascending
+     * @param displayList the list to sort
+     * @return the sorted ReviewList; returns displayList unchanged if sorting fails
+     */
+    public ReviewList sortReviews(String sortBy, String sortOrder, ReviewList displayList) {
+        try {
+            Criterion criterion = mapSortByCriterion(sortBy);
+            SortOrder order = "Descending".equals(sortOrder)
+                    ? SortOrder.DESCENDING
+                    : SortOrder.ASCENDING;
+            return reviewList.sort(criterion, order, displayList);
+        } catch (InvalidArgumentException e) {
+            return displayList;
+        }
+    }
+
+    /**
+     * Returns the 1-based master-list index of the review at rowIndex in the display list.
+     * Uses reference equality since filter() returns the same Review objects.
+     *
+     * @param displayList the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @return the 1-based index in the master list, or -1 if not found
+     */
+    public int getMasterIndex(ReviewList displayList, int rowIndex) {
+        try {
+            Review displayed = displayList.getReview(rowIndex);
+            List<Review> all = reviewList.getAllReviews();
+            for (int i = 0; i < all.size(); i++) {
+                if (all.get(i) == displayed) {
+                    return i + 1;
+                }
+            }
+        } catch (InvalidArgumentException e) {
+            // rowIndex is out of bounds in the display list; return -1 to signal not found
+        }
+        return -1;
+    }
+
+    private static Tag[] parseTags(String csv) {
+        if (csv == null || csv.isBlank()) {
+            return new Tag[0];
+        }
+        String[] parts = csv.split(",");
+        Tag[] tags = new Tag[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            tags[i] = new Tag(parts[i].trim());
+        }
+        return tags;
+    }
+
+    private static Criterion mapSortByCriterion(String sortBy) {
+        switch (sortBy) {
+        case "Food":
+            return Criterion.FOOD_SCORE;
+        case "Cleanliness":
+            return Criterion.CLEANLINESS_SCORE;
+        case "Service":
+            return Criterion.SERVICE_SCORE;
+        case "Tag Count":
+            return Criterion.TAG_COUNT;
+        default:
+            return Criterion.OVERALL_SCORE;
         }
     }
 }

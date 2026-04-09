@@ -1,10 +1,7 @@
 package application.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -15,15 +12,9 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import application.CommandResult;
 import application.MealMeter;
-import application.condition.Condition;
-import application.condition.GreaterThanOrEqualsToCondition;
 import application.exception.InvalidArgumentException;
-import application.parser.ConditionParser;
-import application.review.Criterion;
 import application.review.Review;
 import application.review.ReviewList;
-import application.review.SortOrder;
-import application.review.Tag;
 
 /**
  * Main GUI window for MealMeter. Coordinates between patron and owner panels,
@@ -32,10 +23,8 @@ import application.review.Tag;
  * <p>The GUI contains no business logic. All operations are expressed as
  * command strings passed to the backend (MVC controller layer).</p>
  */
-// CHECKSTYLE.OFF: AbbreviationAsWordInName - "GUI" is an established acronym for this class
-public class MealMeterGUI extends JFrame implements
+public class MealMeterGui extends JFrame implements
         PatronPanel.PatronPanelListener, OwnerPanel.OwnerPanelListener {
-    // CHECKSTYLE.ON: AbbreviationAsWordInName
 
     private static final int WINDOW_WIDTH = 1100;
     private static final int WINDOW_HEIGHT = 750;
@@ -53,9 +42,9 @@ public class MealMeterGUI extends JFrame implements
     private final OwnerPanel ownerPanel;
 
     /**
-     * Constructs and displays the MealMeterGUI window.
+     * Constructs and displays the MealMeterGui window.
      */
-    public MealMeterGUI() {
+    public MealMeterGui() {
         this.mealMeter = new MealMeter();
         this.currentDisplayList = mealMeter.getReviewList();
 
@@ -130,8 +119,9 @@ public class MealMeterGUI extends JFrame implements
         JOptionPane.showMessageDialog(this, result.output(), "Filter Applied",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        // Re-derive the display list with the same command so the table stays filtered
-        refreshDisplayAfterFilter(includeTags, excludeTags, status, minRating, conditions);
+        currentDisplayList = mealMeter.filterReviews(includeTags, excludeTags, status,
+                minRating, conditions);
+        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
     }
 
     @Override
@@ -143,28 +133,31 @@ public class MealMeterGUI extends JFrame implements
         JOptionPane.showMessageDialog(this, result.output(), "Sort Applied",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        refreshDisplayAfterSort(sortBy, sortOrder);
+        currentDisplayList = mealMeter.sortReviews(sortBy, sortOrder, currentDisplayList);
+        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
     }
 
     @Override
     public void onResolveReview(int rowIndex) {
-        int masterIdx = masterIndexOf(currentDisplayList, rowIndex);
+        int masterIdx = mealMeter.getMasterIndex(currentDisplayList, rowIndex);
         if (masterIdx < 0) {
             return;
         }
         CommandResult result = mealMeter.handleInput("resolve " + masterIdx);
-        JOptionPane.showMessageDialog(this, result.output(), "Resolve", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, result.output(), "Resolve",
+                JOptionPane.INFORMATION_MESSAGE);
         ownerPanel.refreshTable(currentDisplayList.getAllReviews());
     }
 
     @Override
     public void onUnresolveReview(int rowIndex) {
-        int masterIdx = masterIndexOf(currentDisplayList, rowIndex);
+        int masterIdx = mealMeter.getMasterIndex(currentDisplayList, rowIndex);
         if (masterIdx < 0) {
             return;
         }
         CommandResult result = mealMeter.handleInput("unresolve " + masterIdx);
-        JOptionPane.showMessageDialog(this, result.output(), "Unresolve", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, result.output(), "Unresolve",
+                JOptionPane.INFORMATION_MESSAGE);
         ownerPanel.refreshTable(currentDisplayList.getAllReviews());
     }
 
@@ -187,7 +180,7 @@ public class MealMeterGUI extends JFrame implements
                 return;
             }
 
-            int masterIdx = masterIndexOf(currentDisplayList, rowIndex);
+            int masterIdx = mealMeter.getMasterIndex(currentDisplayList, rowIndex);
             if (masterIdx < 0) {
                 return;
             }
@@ -201,7 +194,8 @@ public class MealMeterGUI extends JFrame implements
                 result = mealMeter.handleInput("addtag " + masterIdx + " /tag " + trimmed);
             }
 
-            JOptionPane.showMessageDialog(this, result.output(), "Tags", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, result.output(), "Tags",
+                    JOptionPane.INFORMATION_MESSAGE);
             ownerPanel.refreshTable(currentDisplayList.getAllReviews());
         } catch (InvalidArgumentException e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
@@ -218,27 +212,16 @@ public class MealMeterGUI extends JFrame implements
             return;
         }
 
-        int masterIdx = masterIndexOf(currentDisplayList, rowIndex);
+        int masterIdx = mealMeter.getMasterIndex(currentDisplayList, rowIndex);
         if (masterIdx < 0) {
             return;
         }
 
-        try {
-            Review toDelete = currentDisplayList.getReview(rowIndex);
-            CommandResult result = mealMeter.handleInput("delete " + masterIdx);
-            JOptionPane.showMessageDialog(this, result.output(), "Delete",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            // Remove from display list too so table stays consistent
-            List<Review> remaining = currentDisplayList.getAllReviews().stream()
-                    .filter(r -> r != toDelete)
-                    .collect(Collectors.toList());
-            currentDisplayList = new ReviewList(remaining);
-            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
-        } catch (InvalidArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        CommandResult result = mealMeter.handleInput("delete " + masterIdx);
+        JOptionPane.showMessageDialog(this, result.output(), "Delete",
+                JOptionPane.INFORMATION_MESSAGE);
+        currentDisplayList = mealMeter.getReviewList();
+        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
     }
 
     @Override
@@ -282,26 +265,6 @@ public class MealMeterGUI extends JFrame implements
     }
 
     /**
-     * Returns the 1-based master-list index of the review at rowIndex in the display list.
-     * Uses reference equality since filter() returns the same Review objects.
-     */
-    private int masterIndexOf(ReviewList displayList, int rowIndex) {
-        try {
-            Review displayed = displayList.getReview(rowIndex);
-            List<Review> all = mealMeter.getReviewList().getAllReviews();
-            for (int i = 0; i < all.size(); i++) {
-                if (all.get(i) == displayed) {
-                    return i + 1;
-                }
-            }
-        } catch (InvalidArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return -1;
-    }
-
-    /**
      * Builds the filter command string from the panel's form inputs.
      */
     private String buildFilterCommand(String includeTags, String excludeTags, String status,
@@ -334,90 +297,6 @@ public class MealMeterGUI extends JFrame implements
         return cmd.toString();
     }
 
-    /**
-     * Re-runs the filter via MealMeter and updates the display list.
-     * Called after a successful filter to keep the table showing filtered results.
-     */
-    private void refreshDisplayAfterFilter(String includeTags, String excludeTags, String status,
-                                           double minRating, String conditions) {
-        String cmd = buildFilterCommand(includeTags, excludeTags, status, minRating, conditions);
-        CommandResult recheck = mealMeter.handleInput(cmd);
-
-        // Only update the display if the command succeeded (no error output)
-        if (!recheck.output().toLowerCase().contains("error")
-                && !recheck.output().equals("Access denied. Please log in as the owner to use this command.")) {
-            // Derive the filtered list using the same parameters through the backend
-            currentDisplayList = deriveFilteredList(includeTags, excludeTags, status,
-                    minRating, conditions);
-        }
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
-    }
-
-    /**
-     * Derives a filtered ReviewList from the master list using the form inputs.
-     * Tag strings use comma-separation matching the backend's Tag.toTags() format.
-     */
-    private ReviewList deriveFilteredList(String includeTags, String excludeTags, String status,
-                                          double minRating, String conditions) {
-        try {
-            Tag[] includeArr = parseTags(includeTags);
-            Tag[] excludeArr = parseTags(excludeTags);
-
-            Set<Tag> includeSet = new HashSet<>(Arrays.asList(includeArr));
-            Set<Tag> excludeSet = new HashSet<>(Arrays.asList(excludeArr));
-
-            Boolean isResolved = null;
-            if ("Resolved".equals(status)) {
-                isResolved = true;
-            } else if ("Outstanding".equals(status)) {
-                isResolved = false;
-            }
-
-            Set<Condition> conditionSet = new HashSet<>();
-            if (minRating > 1.0) {
-                conditionSet.add(new GreaterThanOrEqualsToCondition(
-                        Criterion.OVERALL_SCORE, minRating));
-            }
-            if (!conditions.isEmpty()) {
-                conditionSet.addAll(ConditionParser.getConditions(conditions));
-            }
-
-            return mealMeter.getReviewList().filter(includeSet, excludeSet, conditionSet, isResolved);
-        } catch (Exception e) {
-            return mealMeter.getReviewList();
-        }
-    }
-
-    private Tag[] parseTags(String csv) {
-        if (csv == null || csv.isBlank()) {
-            return new Tag[0];
-        }
-        String[] parts = csv.split(",");
-        Tag[] tags = new Tag[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            tags[i] = new Tag(parts[i].trim());
-        }
-        return tags;
-    }
-
-    /**
-     * Re-runs the sort via MealMeter and updates the display list.
-     */
-    private void refreshDisplayAfterSort(String sortBy, String sortOrder) {
-        try {
-            Criterion criterion = mapSortByCriterion(sortBy);
-            SortOrder order = "Descending".equals(sortOrder)
-                    ? SortOrder.DESCENDING
-                    : SortOrder.ASCENDING;
-            currentDisplayList = mealMeter.getReviewList().sort(criterion, order,
-                    currentDisplayList);
-            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
-        } catch (InvalidArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Sort error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private String mapSortByToCriterionArg(String sortBy) {
         switch (sortBy) {
         case "Food":
@@ -430,21 +309,6 @@ public class MealMeterGUI extends JFrame implements
             return "tag";
         default:
             return "overall";
-        }
-    }
-
-    private Criterion mapSortByCriterion(String sortBy) {
-        switch (sortBy) {
-        case "Food":
-            return Criterion.FOOD_SCORE;
-        case "Cleanliness":
-            return Criterion.CLEANLINESS_SCORE;
-        case "Service":
-            return Criterion.SERVICE_SCORE;
-        case "Tag Count":
-            return Criterion.TAG_COUNT;
-        default:
-            return Criterion.OVERALL_SCORE;
         }
     }
 
@@ -471,6 +335,6 @@ public class MealMeterGUI extends JFrame implements
      * @param args command-line arguments (unused)
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(MealMeterGUI::new);
+        SwingUtilities.invokeLater(MealMeterGui::new);
     }
 }
