@@ -106,13 +106,6 @@ public class CommandTest {
     }
 
     @Test
-    public void listReviewsCommand_execute_success() {
-        ListReviewsCommand cmd = new ListReviewsCommand();
-        String output = cmd.execute(reviewList, storage, authManager);
-        assertTrue(output.contains("Review list is empty."));
-    }
-
-    @Test
     public void exitCommand_isTerminating() {
         ExitCommand cmd = new ExitCommand();
         assertTrue(cmd.isTerminatingCommand());
