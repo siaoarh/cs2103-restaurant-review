@@ -2,7 +2,6 @@ package application.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -16,6 +15,7 @@ import application.command.AddReviewCommand;
 import application.command.AddTagsCommand;
 import application.command.Command;
 import application.command.DeleteReviewCommand;
+import application.command.DeleteTagsCommand;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -177,8 +177,8 @@ public class MealMeterGui extends JFrame implements
             String currentTags = review.getTagsAsString();
 
             String prompt = "Current tags: " + (currentTags.isEmpty() ? "none" : currentTags)
-                    + "\n\nEnter a tag name to add it, separated by spaces.";
-            String input = JOptionPane.showInputDialog(this, prompt, "Manage Tags",
+                    + "\n\nEnter a tag name to add it, separated by commas.";
+            String input = JOptionPane.showInputDialog(this, prompt, "Add Tags",
                     JOptionPane.PLAIN_MESSAGE);
 
             if (input == null || input.trim().isEmpty()) {
@@ -192,6 +192,39 @@ public class MealMeterGui extends JFrame implements
 
             String trimmed = input.trim();
             Command command = new AddTagsCommand(masterIdx, trimmed);
+            CommandResult result = mealMeter.handleInput(command);
+
+            JOptionPane.showMessageDialog(this, result.output(), "Tags",
+                    JOptionPane.INFORMATION_MESSAGE);
+            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        } catch (InvalidArgumentException e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void onDeleteTagReview(int rowIndex) {
+        try {
+            Review review = currentDisplayList.getReview(rowIndex);
+            String currentTags = review.getTagsAsString();
+
+            String prompt = "Current tags: " + (currentTags.isEmpty() ? "none" : currentTags)
+                    + "\n\nEnter a tag name to delete it, separated by commas.";
+            String input = JOptionPane.showInputDialog(this, prompt, "Delete Tags",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            if (input == null || input.trim().isEmpty()) {
+                return;
+            }
+
+            int masterIdx = mealMeter.getMasterIndex(currentDisplayList, rowIndex);
+            if (masterIdx < 0) {
+                return;
+            }
+
+            String trimmed = input.trim();
+            Command command = new DeleteTagsCommand(masterIdx, trimmed);
             CommandResult result = mealMeter.handleInput(command);
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
