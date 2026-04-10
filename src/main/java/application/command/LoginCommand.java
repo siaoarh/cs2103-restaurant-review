@@ -1,11 +1,7 @@
 package application.command;
 
-import java.util.Map;
-import java.util.Set;
 
 import application.auth.AuthManager;
-import application.exception.MissingArgumentException;
-import application.parser.ArgumentParser;
 import application.review.ReviewList;
 import application.storage.Storage;
 
@@ -13,20 +9,15 @@ import application.storage.Storage;
  * Represents a login command.
  */
 public class LoginCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default");
     private final String password;
 
     /**
      * Constructor for LoginCommand class.
-     * @param commandArgs the arguments of the command
-     * @throws MissingArgumentException if the password is missing
+     *
+     * @param password the password to authenticate with
      */
-    public LoginCommand(Map<String, String> commandArgs) throws MissingArgumentException {
-        String rawPassword = commandArgs.get("/default");
-        if (!ArgumentParser.isValidString(rawPassword)) {
-            throw new MissingArgumentException("Please enter a valid password.");
-        }
-        this.password = rawPassword.trim();
+    public LoginCommand(String password) {
+        this.password = password;
     }
 
     @Override
@@ -36,6 +27,7 @@ public class LoginCommand extends Command {
 
     /**
      * Executes the login command.
+     *
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager

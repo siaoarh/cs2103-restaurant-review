@@ -146,7 +146,7 @@ public class MealMeterGui extends JFrame implements
                 JOptionPane.INFORMATION_MESSAGE);
 
         currentDisplayList = mealMeter.sortReviews(sortBy, sortOrder, currentDisplayList);
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        ownerPanel.refreshTable(currentDisplayList);
     }
 
     @Override
@@ -269,7 +269,8 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onLogout() {
-        CommandResult result = mealMeter.handleInput("logout");
+        Command command = new LogoutCommand();
+        CommandResult result = mealMeter.handleInput(command);
         JOptionPane.showMessageDialog(this, result.output(), "Logout",
                 JOptionPane.INFORMATION_MESSAGE);
         tabbedPane.setSelectedIndex(PATRON_TAB_INDEX);
@@ -285,7 +286,9 @@ public class MealMeterGui extends JFrame implements
 
         if (option == JOptionPane.OK_OPTION) {
             String entered = new String(pwField.getPassword());
-            CommandResult result = mealMeter.handleInput("login " + entered);
+            Command command = new LoginCommand(entered);
+            CommandResult result = mealMeter.handleInput(command);
+
             if (mealMeter.isOwnerAuthenticated()) {
                 ownerPanel.refreshTable(currentDisplayList);
                 JOptionPane.showMessageDialog(this, result.output(), "Login Successful",
@@ -298,39 +301,6 @@ public class MealMeterGui extends JFrame implements
         } else {
             tabbedPane.setSelectedIndex(PATRON_TAB_INDEX);
         }
-    }
-
-    /**
-     * Builds the filter command string from the panel's form inputs.
-     */
-    private String buildFilterCommand(String includeTags, String excludeTags, String status,
-                                      double minRating, String conditions) {
-        StringBuilder cmd = new StringBuilder("filter");
-
-        if (!includeTags.isEmpty()) {
-            cmd.append(" /hastag ").append(includeTags);
-        }
-        if (!excludeTags.isEmpty()) {
-            cmd.append(" /notag ").append(excludeTags);
-        }
-        if ("Resolved".equals(status)) {
-            cmd.append(" /resolved true");
-        } else if ("Outstanding".equals(status)) {
-            cmd.append(" /resolved false");
-        }
-
-        List<String> condParts = new ArrayList<>();
-        if (minRating > 1.0) {
-            condParts.add(String.format("overall >= %.1f", minRating));
-        }
-        if (!conditions.isEmpty()) {
-            condParts.add(conditions);
-        }
-        if (!condParts.isEmpty()) {
-            cmd.append(" /condition ").append(String.join(", ", condParts));
-        }
-
-        return cmd.toString();
     }
 
     private String mapSortByToCriterionArg(String sortBy) {

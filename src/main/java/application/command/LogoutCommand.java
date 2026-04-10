@@ -15,6 +15,7 @@ public class LogoutCommand extends Command {
 
     /**
      * Executes the logout command.
+     *
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager
