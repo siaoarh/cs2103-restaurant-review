@@ -28,7 +28,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import application.review.Rating;
 import application.review.Review;
+import application.review.ReviewList;
 import application.review.Tag;
 
 /**
@@ -270,17 +272,20 @@ public class OwnerPanel extends JPanel {
      *
      * @param reviews the reviews to display
      */
-    public void refreshTable(List<Review> reviews) {
+    public void refreshTable(ReviewList reviews) {
+        List<Review> reviewsAsList = reviews.getAllReviews();
+
         tableModel.setRowCount(0);
-        for (int i = 0; i < reviews.size(); i++) {
-            Review r = reviews.get(i);
+        for (int i = 0; i < reviewsAsList.size(); i++) {
+            Review r = reviewsAsList.get(i);
             String tags = r.getTagsAsString();
+            Rating rating = r.getRating();
             tableModel.addRow(new Object[]{
                 i + 1,
-                String.format("%.1f", r.getRating().getOverallScore()),
-                String.format("%.1f", r.getRating().getFoodScore()),
-                String.format("%.1f", r.getRating().getCleanlinessScore()),
-                String.format("%.1f", r.getRating().getServiceScore()),
+                rating.getOverallScoreString(),
+                rating.getFoodScoreString(),
+                rating.getCleanlinessScoreString(),
+                rating.getServiceScoreString(),
                 r.isResolved() ? "Resolved" : "Outstanding",
                 tags,
                 r.getReviewBody()

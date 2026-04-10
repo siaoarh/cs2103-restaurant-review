@@ -119,20 +119,28 @@ public class MealMeter {
      * Handles one user input command and returns the command result.
      *
      * @param command the command object to execute
-     * @return the result containing output and termination status
+     * @return the result containing output and termination status and the reviews after execution
      */
     public CommandResult handleInput(Command command) {
         try {
             if (command.requiresOwnerAuthentication() && !authManager.isOwnerAuthenticated()) {
-                return new CommandResult(ACCESS_DENIED_MESSAGE, false);
+                return new CommandResult(ACCESS_DENIED_MESSAGE,
+                        false,
+                        reviewList);
             }
 
             String output = command.execute(reviewList, storage, authManager);
-            return new CommandResult(output, command.isTerminatingCommand());
+            return new CommandResult(output,
+                    command.isTerminatingCommand(),
+                    reviewList);
         } catch (InvalidArgumentException | IOException e) {
-            return new CommandResult(e.getMessage(), false);
+            return new CommandResult(e.getMessage(),
+                    false,
+                    reviewList);
         } catch (Exception e) {
-            return new CommandResult("An unexpected error occurred: " + e.getMessage(), false);
+            return new CommandResult("An unexpected error occurred: " + e.getMessage(),
+                    false,
+                    reviewList);
         }
     }
 

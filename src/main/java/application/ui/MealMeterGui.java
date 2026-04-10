@@ -15,7 +15,6 @@ import application.command.*;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
-import application.review.Tag;
 
 /**
  * Main GUI window for MealMeter. Coordinates between patron and owner panels,
@@ -107,8 +106,8 @@ public class MealMeterGui extends JFrame implements
 
         // Auto-refresh owner table if logged in
         if (mealMeter.isOwnerAuthenticated()) {
-            currentDisplayList = mealMeter.getReviewList();
-            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+            currentDisplayList = result.reviews();
+            ownerPanel.refreshTable(currentDisplayList);
         }
 
         return result.output();
@@ -133,9 +132,8 @@ public class MealMeterGui extends JFrame implements
         JOptionPane.showMessageDialog(this, result.output(), "Filter Applied",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        currentDisplayList = mealMeter.filterReviews(includeTags, excludeTags, status,
-                minRating, conditions);
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        currentDisplayList = result.reviews();
+        ownerPanel.refreshTable(currentDisplayList);
     }
 
     @Override
@@ -160,7 +158,7 @@ public class MealMeterGui extends JFrame implements
         CommandResult result = mealMeter.handleInput("resolve " + masterIdx);
         JOptionPane.showMessageDialog(this, result.output(), "Resolve",
                 JOptionPane.INFORMATION_MESSAGE);
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        ownerPanel.refreshTable(currentDisplayList);
     }
 
     @Override
@@ -172,7 +170,7 @@ public class MealMeterGui extends JFrame implements
         CommandResult result = mealMeter.handleInput("unresolve " + masterIdx);
         JOptionPane.showMessageDialog(this, result.output(), "Unresolve",
                 JOptionPane.INFORMATION_MESSAGE);
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        ownerPanel.refreshTable(currentDisplayList);
     }
 
     @Override
@@ -201,7 +199,7 @@ public class MealMeterGui extends JFrame implements
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
                     JOptionPane.INFORMATION_MESSAGE);
-            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+            ownerPanel.refreshTable(currentDisplayList);
         } catch (InvalidArgumentException e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -234,7 +232,7 @@ public class MealMeterGui extends JFrame implements
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
                     JOptionPane.INFORMATION_MESSAGE);
-            ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+            ownerPanel.refreshTable(currentDisplayList);
         } catch (InvalidArgumentException e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
@@ -258,14 +256,14 @@ public class MealMeterGui extends JFrame implements
         CommandResult result = mealMeter.handleInput(command);
         JOptionPane.showMessageDialog(this, result.output(), "Delete",
                 JOptionPane.INFORMATION_MESSAGE);
-        currentDisplayList = mealMeter.getReviewList();
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        currentDisplayList = result.reviews();
+        ownerPanel.refreshTable(currentDisplayList);
     }
 
     @Override
     public void onRefresh() {
         currentDisplayList = mealMeter.getReviewList();
-        ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+        ownerPanel.refreshTable(currentDisplayList);
         JOptionPane.showMessageDialog(this, "Refreshed.", "Done", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -289,7 +287,7 @@ public class MealMeterGui extends JFrame implements
             String entered = new String(pwField.getPassword());
             CommandResult result = mealMeter.handleInput("login " + entered);
             if (mealMeter.isOwnerAuthenticated()) {
-                ownerPanel.refreshTable(currentDisplayList.getAllReviews());
+                ownerPanel.refreshTable(currentDisplayList);
                 JOptionPane.showMessageDialog(this, result.output(), "Login Successful",
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
