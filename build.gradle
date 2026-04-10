@@ -10,10 +10,6 @@ checkstyle {
     toolVersion = '11.0.0'
 }
 
-checkstyleMain {
-    exclude 'application/ui/MealMeterGUI.java'
-}
-
 repositories {
     mavenCentral()
 }
@@ -58,14 +54,14 @@ shadowJar {
     }
 }
 
-// GUI fat-JAR: launches MealMeterGUI directly
+// GUI fat-JAR: launches MealMeterGui directly
 task guiJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
     configurations = [project.configurations.runtimeClasspath]
     archiveBaseName = "restaurantReviewer-gui"
     archiveClassifier = null
     manifest {
-        attributes 'Main-Class': 'application.ui.MealMeterGUI'
+        attributes 'Main-Class': 'application.ui.MealMeterGui'
     }
 }
 
