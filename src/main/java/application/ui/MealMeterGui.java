@@ -13,10 +13,12 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import application.CommandResult;
 import application.MealMeter;
 import application.command.AddReviewCommand;
+import application.command.AddTagsCommand;
 import application.command.Command;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
+import application.review.Tag;
 
 /**
  * Main GUI window for MealMeter. Coordinates between patron and owner panels,
@@ -90,6 +92,15 @@ public class MealMeterGui extends JFrame implements
 
     // ── PatronPanelListener ─────────────────────────────────────────────────
 
+    /**
+     * Called when a review is submitted. Returns output message to display.
+     * @param body the review body text
+     * @param food the food score
+     * @param clean the cleanliness score
+     * @param service the service score
+     * @param tagsAsString the tags to add to the review, as a string
+     * @return the output message from the controller
+     */
     @Override
     public String onReviewSubmitted(String body, double food, double clean,
                                     double service, String tagsAsString) {
@@ -159,17 +170,13 @@ public class MealMeterGui extends JFrame implements
     }
 
     @Override
-    public void onTagReview(int rowIndex) {
+    public void onAddTagReview(int rowIndex) {
         try {
             Review review = currentDisplayList.getReview(rowIndex);
-            String currentTags = review.getTags().stream()
-                    .map(t -> t.getTagName())
-                    .sorted()
-                    .collect(Collectors.joining(", "));
+            String currentTags = review.getTagsAsString();
 
             String prompt = "Current tags: " + (currentTags.isEmpty() ? "none" : currentTags)
-                    + "\n\nEnter a tag name to ADD it."
-                    + "\nPrefix with '-' to REMOVE (e.g. -spicy).";
+                    + "\n\nEnter a tag name to add it, separated by spaces.";
             String input = JOptionPane.showInputDialog(this, prompt, "Manage Tags",
                     JOptionPane.PLAIN_MESSAGE);
 
@@ -183,13 +190,8 @@ public class MealMeterGui extends JFrame implements
             }
 
             String trimmed = input.trim();
-            CommandResult result;
-            if (trimmed.startsWith("-")) {
-                String tagName = trimmed.substring(1).trim();
-                result = mealMeter.handleInput("deletetag " + masterIdx + " /tag " + tagName);
-            } else {
-                result = mealMeter.handleInput("addtag " + masterIdx + " /tag " + trimmed);
-            }
+            Command command = new AddTagsCommand(masterIdx, trimmed);
+            CommandResult result = mealMeter.handleInput(command);
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
                     JOptionPane.INFORMATION_MESSAGE);

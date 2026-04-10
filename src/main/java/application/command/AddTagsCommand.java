@@ -17,28 +17,18 @@ import application.storage.Storage;
  * Class representing a command to add tags to a review.
  */
 public class AddTagsCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
     private final int index;
-    private final Set<Tag> tagsToAdd;
+    private final String tagsToAddAsString;
 
     /**
      * Constructor for AddTagCommand class.
      *
-     * @param commandArgs the arguments of the command
-     * @throws InvalidArgumentException if the index is not a number
-     * @throws MissingArgumentException if the index is missing
+     * @param index the index of the review to add tags to
+     * @param tagsToAddAsString the set of tags to add to the review
      */
-    public AddTagsCommand(Map<String, String> commandArgs)
-            throws InvalidArgumentException, MissingArgumentException {
-        String indexAsString = commandArgs.get("/default");
-        String tagsAsString = commandArgs.get("/tag");
-
-        this.index = ArgumentParser.toInt(indexAsString);
-        this.tagsToAdd = Tag.toTags(tagsAsString);
-
-        if (tagsToAdd.isEmpty()) {
-            throw new InvalidArgumentException("No tags provided!");
-        }
+    public AddTagsCommand(int index, String tagsToAddAsString) {
+        this.index = index;
+        this.tagsToAddAsString = tagsToAddAsString;
     }
 
     /**
@@ -60,7 +50,9 @@ public class AddTagsCommand extends Command {
             Storage storage,
             AuthManager manager
     ) throws InvalidArgumentException, IOException {
+        Set<Tag> tagsToAdd = Tag.toTags(tagsToAddAsString);
         Review review = reviews.getReview(index);
+
         Set<Tag> existingTags = review.getMatchingTags(tagsToAdd);
         Set<Tag> nonExistentTags = review.getNonMatchingTags(tagsToAdd);
 

@@ -205,7 +205,7 @@ public class OwnerPanel extends JPanel {
         tagButton.addActionListener(e -> {
             int row = reviewsTable.getSelectedRow();
             if (row >= 0) {
-                listener.onTagReview(row + 1);
+                listener.onAddTagReview(row + 1);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a review first.",
                         "No Selection", JOptionPane.WARNING_MESSAGE);
@@ -261,10 +261,7 @@ public class OwnerPanel extends JPanel {
         tableModel.setRowCount(0);
         for (int i = 0; i < reviews.size(); i++) {
             Review r = reviews.get(i);
-            String tags = r.getTags().stream()
-                    .map(Tag::getTagName)
-                    .sorted()
-                    .collect(Collectors.joining(", "));
+            String tags = r.getTagsAsString();
             tableModel.addRow(new Object[]{
                 i + 1,
                 String.format("%.1f", r.getRating().getOverallScore()),
@@ -332,9 +329,9 @@ public class OwnerPanel extends JPanel {
         void onUnresolveReview(int rowIndex);
 
         /**
-         * Called when tag action is requested.
+         * Called when add tag action is requested.
          */
-        void onTagReview(int rowIndex);
+        void onAddTagReview(int rowIndex);
 
         /**
          * Called when delete action is requested.
