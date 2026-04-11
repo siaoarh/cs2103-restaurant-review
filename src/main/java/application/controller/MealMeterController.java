@@ -129,7 +129,7 @@ public class MealMeterController {
      * @param command the command object to execute
      * @return the result containing output and termination status and the reviews after execution
      */
-    public CommandResult handleInput(Command command) {
+    private CommandResult handleInput(Command command) {
         try {
             if (command.requiresOwnerAuthentication() && !authManager.isOwnerAuthenticated()) {
                 return new CommandResult(ACCESS_DENIED_MESSAGE,
@@ -157,7 +157,7 @@ public class MealMeterController {
      * @param rowIndex the 1-based row index within the display list
      * @return the 1-based index in the master list, or -1 if not found
      */
-    public int getMasterIndex(ReviewList displayedReviews, int rowIndex) {
+    private int getMasterIndex(ReviewList displayedReviews, int rowIndex) {
         try {
             Review displayedReview = displayedReviews.getReview(rowIndex);
             for (int i = 1; i <= reviews.size(); i++) {
