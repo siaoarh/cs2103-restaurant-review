@@ -188,9 +188,13 @@ public class PatronPanel extends JPanel {
         addTagButton.addActionListener(e -> {
             String tag = tagInputField.getText().trim();
             if (!tag.isEmpty()) {
-                pendingTagsAsString += tag;
-                tagInputField.setText("");
-                updateTagsLabel();
+                if (pendingTagsAsString.isEmpty()) {
+                    pendingTagsAsString = tag;
+                } else {
+                    pendingTagsAsString += (", " + tag);
+                    tagInputField.setText("");
+                    updateTagsLabel();
+                }
             }
         });
 
