@@ -5,51 +5,50 @@ import java.util.Collections;
 import java.util.List;
 
 import application.auth.AuthManager;
+import application.command.AddReviewCommand;
 import application.command.Command;
 import application.command.CommandResult;
 import application.exception.InvalidArgumentException;
-import application.review.Criterion;
 import application.review.Review;
 import application.review.ReviewList;
-import application.review.SortOrder;
 import application.storage.Storage;
 import application.storage.StorageLoadResult;
 
 /**
- * Represents the core MealMeter application logic.
+ * Represents the core MealMeterController application logic.
  *
  * <p>This class acts as the bridge between the user interface
  * and the command-processing logic.</p>
  */
-public class MealMeter {
+public class MealMeterController {
     private static final String DEFAULT_OWNER_PASSWORD = "password";
     private static final String ACCESS_DENIED_MESSAGE =
             "Access denied. Please log in as the owner to use this command.";
 
     private final Storage storage;
     private final AuthManager authManager;
-    private final ReviewList reviewList;
+    private final ReviewList reviews;
     private final boolean hasStorageLoadFailure;
     private final List<String> startupStorageWarnings;
 
     /**
-     * Constructs a MealMeter application and loads stored reviews.
+     * Constructs a MealMeterController application and loads stored reviews.
      */
-    public MealMeter() {
+    public MealMeterController() {
         this(DEFAULT_OWNER_PASSWORD);
     }
 
     /**
-     * Constructs a MealMeter application with a custom owner password
+     * Constructs a MealMeterController application with a custom owner password
      * and loads stored reviews.
      *
      * @param ownerPassword the owner password for session login
      */
-    public MealMeter(String ownerPassword) {
+    public MealMeterController(String ownerPassword) {
         this(new Storage(), new AuthManager(ownerPassword));
     }
 
-    MealMeter(Storage storage, AuthManager authManager) {
+    MealMeterController(Storage storage, AuthManager authManager) {
         this.storage = storage;
         this.authManager = authManager;
 
@@ -68,7 +67,7 @@ public class MealMeter {
             loadFailure = true;
         }
 
-        this.reviewList = loadedReviews;
+        this.reviews = loadedReviews;
         this.hasStorageLoadFailure = loadFailure;
         this.startupStorageWarnings = storageWarnings;
     }
@@ -97,7 +96,7 @@ public class MealMeter {
      * @return the review list
      */
     public ReviewList getReviewList() {
-        return reviewList;
+        return reviews;
     }
 
     /**
@@ -120,18 +119,18 @@ public class MealMeter {
             if (command.requiresOwnerAuthentication() && !authManager.isOwnerAuthenticated()) {
                 return new CommandResult(ACCESS_DENIED_MESSAGE,
                         false,
-                        reviewList);
+                        reviews);
             }
 
-            return command.execute(reviewList, storage, authManager);
+            return command.execute(reviews, storage, authManager);
         } catch (InvalidArgumentException | IOException e) {
             return new CommandResult(e.getMessage(),
                     false,
-                    reviewList);
+                    reviews);
         } catch (Exception e) {
             return new CommandResult("An unexpected error occurred: " + e.getMessage(),
                     false,
-                    reviewList);
+                    reviews);
         }
     }
 
@@ -139,22 +138,32 @@ public class MealMeter {
      * Returns the 1-based master-list index of the review at rowIndex in the display list.
      * Uses reference equality since filter() returns the same Review objects.
      *
-     * @param displayList the filtered or sorted display list
+     * @param displayedReviews the filtered or sorted display list
      * @param rowIndex the 1-based row index within the display list
      * @return the 1-based index in the master list, or -1 if not found
      */
-    public int getMasterIndex(ReviewList displayList, int rowIndex) {
+    public int getMasterIndex(ReviewList displayedReviews, int rowIndex) {
         try {
-            Review displayed = displayList.getReview(rowIndex);
-            List<Review> all = reviewList.getAllReviews();
-            for (int i = 0; i < all.size(); i++) {
-                if (all.get(i) == displayed) {
-                    return i + 1;
+            Review displayedReview = displayedReviews.getReview(rowIndex);
+            for (int i = 1; i <= reviews.size(); i++) {
+                if (reviews.getReview(i).equals(displayedReview)) {
+                    return i;
                 }
             }
         } catch (InvalidArgumentException e) {
-            // rowIndex is out of bounds in the display list; return -1 to signal not found
+            return -1;
         }
         return -1;
+    }
+
+    public CommandResult submitReview(
+            String reviewBody,
+            Double foodScore,
+            Double cleanlinessScore,
+            Double serviceScore,
+            String tagsAsString
+    ) {
+        Command command = new AddReviewCommand(reviewBody, foodScore, cleanlinessScore, serviceScore, tagsAsString);
+        return handleInput(command);
     }
 }

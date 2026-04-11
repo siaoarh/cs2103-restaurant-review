@@ -28,7 +28,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 /**
- * Patron feedback submission panel for MealMeter GUI.
+ * Patron feedback submission panel for MealMeterController GUI.
  * Handles UI rendering only; delegates all business logic to the controller.
  */
 public class PatronPanel extends JPanel {

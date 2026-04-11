@@ -5,7 +5,7 @@ import javax.swing.SwingUtilities;
 import application.ui.MealMeterGui;
 
 /**
- * Launches the MealMeter GUI.
+ * Launches the MealMeterController GUI.
  */
 class Main {
     public static void main(String[] args) {

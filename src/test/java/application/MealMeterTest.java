@@ -19,13 +19,13 @@ import application.auth.AuthManager;
 import application.storage.Storage;
 
 /**
- * Tests for MealMeter authentication and command gating behavior.
+ * Tests for MealMeterController authentication and command gating behavior.
  */
 public class MealMeterTest {
     private static final String OWNER_PASSWORD = "secret";
 
     private Path tempDirectory;
-    private MealMeter mealMeter;
+    private MealMeterController mealMeterController;
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -33,7 +33,7 @@ public class MealMeterTest {
         Path storagePath = tempDirectory.resolve("data").resolve("reviews.txt");
         Storage storage = new Storage(storagePath);
 
-        mealMeter = new MealMeter(storage, new AuthManager(OWNER_PASSWORD));
+        mealMeterController = new MealMeterController(storage, new AuthManager(OWNER_PASSWORD));
     }
 
     @AfterEach
@@ -55,7 +55,7 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_patronCommandWithoutLogin_allowed() {
-        CommandResult result = mealMeter.handleInput("review great /food 4 /clean 4 /service 4");
+        CommandResult result = mealMeterController.handleInput("review great /food 4 /clean 4 /service 4");
 
         assertTrue(result.output().contains("Added review to list:"));
         assertFalse(result.shouldTerminate());
@@ -63,7 +63,7 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_ownerCommandWithoutLogin_denied() {
-        CommandResult result = mealMeter.handleInput("list");
+        CommandResult result = mealMeterController.handleInput("list");
 
         assertEquals("Access denied. Please log in as the owner to use this command.", result.output());
         assertFalse(result.shouldTerminate());
@@ -71,7 +71,7 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_unknownCommandWithoutLogin_unknownHandledNormally() {
-        CommandResult result = mealMeter.handleInput("somethinginvalid");
+        CommandResult result = mealMeterController.handleInput("somethinginvalid");
 
         assertEquals("I'm sorry, I don't understand that command.", result.output());
         assertFalse(result.shouldTerminate());
@@ -79,7 +79,7 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_loginInvalidFormat_returnsUsage() {
-        CommandResult result = mealMeter.handleInput("login");
+        CommandResult result = mealMeterController.handleInput("login");
 
         assertEquals("Please enter a valid password.", result.output());
         assertFalse(result.shouldTerminate());
@@ -87,7 +87,7 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_loginWrongPassword_returnsFailure() {
-        CommandResult result = mealMeter.handleInput("login wrong");
+        CommandResult result = mealMeterController.handleInput("login wrong");
 
         assertEquals("Incorrect password!", result.output());
         assertFalse(result.shouldTerminate());
@@ -95,8 +95,8 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_loginSuccessThenAlreadyLoggedIn() {
-        CommandResult firstResult = mealMeter.handleInput("LoGiN secret");
-        CommandResult secondResult = mealMeter.handleInput("login secret");
+        CommandResult firstResult = mealMeterController.handleInput("LoGiN secret");
+        CommandResult secondResult = mealMeterController.handleInput("login secret");
 
         assertEquals("Successfully logged in!", firstResult.output());
         assertFalse(firstResult.shouldTerminate());
@@ -107,8 +107,8 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_ownerCommandAfterLogin_allowed() {
-        mealMeter.handleInput("login secret");
-        CommandResult result = mealMeter.handleInput("list");
+        mealMeterController.handleInput("login secret");
+        CommandResult result = mealMeterController.handleInput("list");
 
         assertEquals("Review list is empty.", result.output());
         assertFalse(result.shouldTerminate());
@@ -116,8 +116,8 @@ public class MealMeterTest {
 
     @Test
     public void handleInput_exit_stillTerminates() {
-        mealMeter.handleInput("login secret");
-        CommandResult result = mealMeter.handleInput("exit");
+        mealMeterController.handleInput("login secret");
+        CommandResult result = mealMeterController.handleInput("exit");
 
         assertEquals("Goodbye!", result.output());
         assertTrue(result.shouldTerminate());

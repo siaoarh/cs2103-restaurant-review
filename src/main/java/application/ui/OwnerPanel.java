@@ -34,7 +34,7 @@ import application.review.ReviewList;
 import application.review.Tag;
 
 /**
- * Owner management panel for MealMeter GUI.
+ * Owner management panel for MealMeterController GUI.
  * Handles UI rendering and event delegation only;
  * business logic delegated to the listener.
  */
