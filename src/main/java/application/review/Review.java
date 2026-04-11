@@ -267,6 +267,26 @@ public class Review {
     }
 
     /**
+     * Converts this review and its row index into an object array for GUI table display.
+     *
+     * @param rowIndex the 1-based index to display
+     * @return an object array representing the review row
+     */
+    public Object[] toRow(int rowIndex) {
+        String tags = getTagsAsString();
+        return new Object[]{
+            rowIndex,
+            getOverallScoreString(),
+            getFoodScoreString(),
+            getCleanlinessScoreString(),
+            getServiceScoreString(),
+            isResolved() ? "Resolved" : "Outstanding",
+            tags,
+            getReviewBody()
+        };
+    }
+
+    /**
      * Returns a string representation of this review.
      *
      * @return a formatted string containing rating, resolution status, tags, and review body

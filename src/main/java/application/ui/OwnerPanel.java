@@ -11,7 +11,6 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,18 +19,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import application.review.Rating;
 import application.review.Review;
 import application.review.ReviewList;
-import application.review.Tag;
 
 /**
  * Owner management panel for MealMeterController GUI.
@@ -269,23 +264,7 @@ public class OwnerPanel extends JPanel {
      * @param reviews the reviews to display
      */
     public void refreshTable(ReviewList reviews) {
-        List<Review> reviewsAsList = reviews.getAllReviews();
-
-        tableModel.setRowCount(0);
-        for (int i = 0; i < reviewsAsList.size(); i++) {
-            Review r = reviewsAsList.get(i);
-            String tags = r.getTagsAsString();
-            tableModel.addRow(new Object[]{
-                i + 1,
-                r.getOverallScoreString(),
-                r.getFoodScoreString(),
-                r.getCleanlinessScoreString(),
-                r.getServiceScoreString(),
-                r.isResolved() ? "Resolved" : "Outstanding",
-                tags,
-                r.getReviewBody()
-            });
-        }
+        reviews.populateTableModel(tableModel);
     }
 
     /**
