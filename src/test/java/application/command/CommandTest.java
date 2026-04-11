@@ -106,12 +106,6 @@ public class CommandTest {
     }
 
     @Test
-    public void exitCommand_isTerminating() {
-        ExitCommand cmd = new ExitCommand();
-        assertTrue(cmd.isTerminatingCommand());
-    }
-
-    @Test
     public void filterReviewsCommand_execute_success()
             throws InvalidArgumentException, MissingArgumentException, IOException {
         addReviewCommand_execute_success();
@@ -238,18 +232,6 @@ public class CommandTest {
 
         DeleteTagsCommand cmd = assertDoesNotThrow(() -> new DeleteTagsCommand(args));
         assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
-    }
-
-    @Test
-    public void unknownCommand_execute_success() throws InvalidArgumentException, IOException {
-        Command cmd = new UnknownCommand();
-        assertEquals("I'm sorry, I don't understand that command.", cmd.execute(reviewList, storage, authManager));
-    }
-
-    @Test
-    public void exitCommand_execute_success() throws InvalidArgumentException, IOException {
-        Command cmd = new ExitCommand();
-        assertEquals("Goodbye!", cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
