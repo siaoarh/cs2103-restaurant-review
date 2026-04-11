@@ -40,7 +40,7 @@ test {
 }
 
 application {
-    mainClass.set("application.ui.MealMeterGui")
+    mainClass.set("application.Main")
 }
 
 shadowJar {

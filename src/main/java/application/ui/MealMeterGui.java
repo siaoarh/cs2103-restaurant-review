@@ -333,13 +333,4 @@ public class MealMeterGui extends JFrame implements
             }
         }
     }
-
-    /**
-     * Launches the MealMeter GUI.
-     *
-     * @param args command-line arguments (unused)
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(MealMeterGui::new);
-    }
 }
