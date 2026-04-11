@@ -10,9 +10,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,7 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 /**
- * Patron feedback submission panel for MealMeter GUI.
+ * Patron feedback submission panel for MealMeterController GUI.
  * Handles UI rendering only; delegates all business logic to the controller.
  */
 public class PatronPanel extends JPanel {
@@ -45,7 +42,7 @@ public class PatronPanel extends JPanel {
     private final JTextArea reviewTextArea;
     private final JTextField tagInputField;
     private final JLabel tagsLabel;
-    private final List<String> pendingTags;
+    private String pendingTagsAsString;
     private final PatronPanelListener listener;
 
     /**
@@ -55,7 +52,7 @@ public class PatronPanel extends JPanel {
      */
     public PatronPanel(PatronPanelListener listener) {
         this.listener = listener;
-        this.pendingTags = new ArrayList<>();
+        this.pendingTagsAsString = "";
         this.setLayout(new BorderLayout());
         this.setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -191,9 +188,13 @@ public class PatronPanel extends JPanel {
         addTagButton.addActionListener(e -> {
             String tag = tagInputField.getText().trim();
             if (!tag.isEmpty()) {
-                pendingTags.add(tag);
-                tagInputField.setText("");
-                updateTagsLabel();
+                if (pendingTagsAsString.isEmpty()) {
+                    pendingTagsAsString = tag;
+                } else {
+                    pendingTagsAsString += (", " + tag);
+                    tagInputField.setText("");
+                    updateTagsLabel();
+                }
             }
         });
 
@@ -204,10 +205,10 @@ public class PatronPanel extends JPanel {
     }
 
     private void updateTagsLabel() {
-        if (pendingTags.isEmpty()) {
+        if (pendingTagsAsString.isEmpty()) {
             tagsLabel.setText("No tags added yet");
         } else {
-            tagsLabel.setText("Tags: " + String.join(", ", pendingTags));
+            tagsLabel.setText("Tags: " + pendingTagsAsString);
         }
     }
 
@@ -242,7 +243,7 @@ public class PatronPanel extends JPanel {
         }
 
         String result = listener.onReviewSubmitted(body, food, clean, service,
-                Collections.unmodifiableList(pendingTags));
+                pendingTagsAsString);
 
         if (result != null && !result.isEmpty()) {
             JOptionPane.showMessageDialog(this, result, "Submit Review",
@@ -257,7 +258,7 @@ public class PatronPanel extends JPanel {
         serviceSpinner.setValue(3.0);
         reviewTextArea.setText("");
         tagInputField.setText("");
-        pendingTags.clear();
+        pendingTagsAsString = "";
         updateTagsLabel();
     }
 
@@ -289,21 +290,5 @@ public class PatronPanel extends JPanel {
         }
     }
 
-    /**
-     * Listener interface for patron panel events.
-     */
-    public interface PatronPanelListener {
-        /**
-         * Called when a review is submitted. Returns output message to display.
-         *
-         * @param body the review body text
-         * @param food the food score
-         * @param clean the cleanliness score
-         * @param service the service score
-         * @param tags the list of tag names
-         * @return the output message from the backend
-         */
-        String onReviewSubmitted(String body, double food, double clean,
-                                 double service, List<String> tags);
-    }
+
 }

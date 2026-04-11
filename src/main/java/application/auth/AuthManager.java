@@ -1,5 +1,7 @@
 package application.auth;
 
+import application.parser.ArgumentParser;
+
 /**
  * Manages owner authentication for the application.
  *
@@ -17,7 +19,7 @@ public class AuthManager {
      * @throws IllegalArgumentException if the password is null or blank
      */
     public AuthManager(String ownerPassword) {
-        if (ownerPassword == null || ownerPassword.isBlank()) {
+        if (!ArgumentParser.isValidString(ownerPassword)) {
             throw new IllegalArgumentException("Owner password cannot be null or blank.");
         }
         this.ownerPassword = ownerPassword;

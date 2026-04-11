@@ -10,8 +10,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,19 +18,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import application.review.Review;
-import application.review.Tag;
+import application.review.ReviewList;
+
 
 /**
- * Owner management panel for MealMeter GUI.
+ * Owner management panel for MealMeterController GUI.
  * Handles UI rendering and event delegation only;
  * business logic delegated to the listener.
  */
@@ -47,7 +43,6 @@ public class OwnerPanel extends JPanel {
     private final JTextField includeTagsField;
     private final JTextField excludeTagsField;
     private final JComboBox<String> statusCombo;
-    private final JSpinner minRatingSpinner;
     private final JTextField conditionsField;
     private JComboBox<String> sortByCombo;
     private JComboBox<String> sortOrderCombo;
@@ -87,7 +82,6 @@ public class OwnerPanel extends JPanel {
         this.excludeTagsField = new JTextField(15);
         this.statusCombo = new JComboBox<>(new String[]{"All", "Resolved", "Outstanding"});
         statusCombo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        this.minRatingSpinner = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 5.0, 0.5));
         this.conditionsField = new JTextField(30);
         conditionsField.setToolTipText(
                 "e.g. food scores > 3.5, cleanliness scores >= 4, service scores == 5");
@@ -135,7 +129,6 @@ public class OwnerPanel extends JPanel {
         filterPanel.add(GuiComponentFactory.createLabeledField("Include Tags:", includeTagsField));
         filterPanel.add(GuiComponentFactory.createLabeledField("Exclude Tags:", excludeTagsField));
         filterPanel.add(GuiComponentFactory.createLabeledCombo("Status:", statusCombo));
-        filterPanel.add(GuiComponentFactory.createLabeledField("Min Overall:", minRatingSpinner));
         filterPanel.add(GuiComponentFactory.createLabeledField("Conditions:", conditionsField));
 
         JButton applyFilterButton = GuiComponentFactory.createGradientButton(
@@ -200,12 +193,24 @@ public class OwnerPanel extends JPanel {
             }
         });
 
-        JButton tagButton = GuiComponentFactory.createGradientButton(
-                "Tags", OCEAN_MID, OCEAN_LIGHT, Color.WHITE);
-        tagButton.addActionListener(e -> {
+        JButton addTagButton = GuiComponentFactory.createGradientButton(
+                "Add Tags", OCEAN_MID, OCEAN_LIGHT, Color.WHITE);
+        addTagButton.addActionListener(e -> {
             int row = reviewsTable.getSelectedRow();
             if (row >= 0) {
-                listener.onTagReview(row + 1);
+                listener.onAddTagReview(row + 1);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select a review first.",
+                        "No Selection", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        JButton deleteTagButton = GuiComponentFactory.createGradientButton(
+                "Delete Tags", OCEAN_MID, OCEAN_LIGHT, Color.WHITE);
+        deleteTagButton.addActionListener(e -> {
+            int row = reviewsTable.getSelectedRow();
+            if (row >= 0) {
+                listener.onDeleteTagReview(row + 1);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a review first.",
                         "No Selection", JOptionPane.WARNING_MESSAGE);
@@ -234,7 +239,8 @@ public class OwnerPanel extends JPanel {
 
         actionPanel.add(resolveButton);
         actionPanel.add(unresolveButton);
-        actionPanel.add(tagButton);
+        actionPanel.add(addTagButton);
+        actionPanel.add(deleteTagButton);
         actionPanel.add(deleteButton);
         actionPanel.add(Box.createHorizontalStrut(20));
         actionPanel.add(refreshButton);
@@ -247,9 +253,8 @@ public class OwnerPanel extends JPanel {
         String includeTags = includeTagsField.getText().trim();
         String excludeTags = excludeTagsField.getText().trim();
         String status = (String) statusCombo.getSelectedItem();
-        double minRating = ((Number) minRatingSpinner.getValue()).doubleValue();
         String conditions = conditionsField.getText().trim();
-        listener.onFilterApplied(includeTags, excludeTags, status, minRating, conditions);
+        listener.onFilterApplied(includeTags, excludeTags, status, conditions);
     }
 
     /**
@@ -257,25 +262,8 @@ public class OwnerPanel extends JPanel {
      *
      * @param reviews the reviews to display
      */
-    public void refreshTable(List<Review> reviews) {
-        tableModel.setRowCount(0);
-        for (int i = 0; i < reviews.size(); i++) {
-            Review r = reviews.get(i);
-            String tags = r.getTags().stream()
-                    .map(Tag::getTagName)
-                    .sorted()
-                    .collect(Collectors.joining(", "));
-            tableModel.addRow(new Object[]{
-                i + 1,
-                String.format("%.1f", r.getRating().getOverallScore()),
-                String.format("%.1f", r.getRating().getFoodScore()),
-                String.format("%.1f", r.getRating().getCleanlinessScore()),
-                String.format("%.1f", r.getRating().getServiceScore()),
-                r.isResolved() ? "Resolved" : "Outstanding",
-                tags,
-                r.getReviewBody()
-            });
-        }
+    public void refreshTable(ReviewList reviews) {
+        reviews.populateTableModel(tableModel);
     }
 
     /**
@@ -304,51 +292,5 @@ public class OwnerPanel extends JPanel {
             g2.setPaint(gp2);
             g2.fillRect(0, 0, getWidth(), getHeight());
         }
-    }
-
-    /**
-     * Listener interface for owner panel events.
-     */
-    public interface OwnerPanelListener {
-        /**
-         * Called when filter is applied.
-         */
-        void onFilterApplied(String includeTags, String excludeTags, String status,
-                             double minRating, String conditions);
-
-        /**
-         * Called when sort is applied.
-         */
-        void onSortApplied(String sortBy, String sortOrder);
-
-        /**
-         * Called when resolve action is requested.
-         */
-        void onResolveReview(int rowIndex);
-
-        /**
-         * Called when unresolve action is requested.
-         */
-        void onUnresolveReview(int rowIndex);
-
-        /**
-         * Called when tag action is requested.
-         */
-        void onTagReview(int rowIndex);
-
-        /**
-         * Called when delete action is requested.
-         */
-        void onDeleteReview(int rowIndex);
-
-        /**
-         * Called when refresh is requested.
-         */
-        void onRefresh();
-
-        /**
-         * Called when logout is requested.
-         */
-        void onLogout();
     }
 }

@@ -1,7 +1,6 @@
 package application.review;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,30 +45,6 @@ public class Review {
     }
 
     /**
-     * Constructs a {@code Review} with the specified review body and rating.
-     * <p>
-     * The review is created with no tags and an unresolved status.
-     * </p>
-     *
-     * @param reviewBody the written review content
-     * @param rating the structured rating for the review
-     * @throws IllegalArgumentException if the review body is null or blank
-     */
-    public Review(String reviewBody, Rating rating) throws IllegalArgumentException {
-        if (reviewBody == null || reviewBody.isBlank()) {
-            reviewBody = ""; //allow empty review body
-        }
-        if (rating == null) {
-            throw new IllegalArgumentException("Rating cannot be null.");
-        }
-
-        this.reviewBody = reviewBody.trim();
-        this.rating = rating;
-        this.tags = new HashSet<>();
-        this.isResolved = false;
-    }
-
-    /**
      * Returns the written review body.
      *
      * @return the review body
@@ -88,12 +63,113 @@ public class Review {
     }
 
     /**
-     * Returns an unmodifiable view of the tags attached to this review.
+     * Returns the food score.
      *
-     * @return an unmodifiable set of tags
+     * @return the food score
+     */
+    public double getFoodScore() {
+        return rating.getFoodScore();
+    }
+
+    /**
+     * Returns the food score as a string.
+     *
+     * @return the food score as a string
+     */
+    public String getFoodScoreString() {
+        return rating.getFoodScoreString();
+    }
+
+    /**
+     * Returns the cleanliness score.
+     *
+     * @return the cleanliness score
+     */
+    public double getCleanlinessScore() {
+        return rating.getCleanlinessScore();
+    }
+
+    /**
+     * Returns the cleanliness score as a string.
+     *
+     * @return the cleanliness score as a string
+     */
+    public String getCleanlinessScoreString() {
+        return rating.getCleanlinessScoreString();
+    }
+
+    /**
+     * Returns the service score.
+     *
+     * @return the service score
+     */
+    public double getServiceScore() {
+        return rating.getServiceScore();
+    }
+
+    /**
+     * Returns the service score as a string.
+     *
+     * @return the service score as a string
+     */
+    public String getServiceScoreString() {
+        return rating.getServiceScoreString();
+    }
+
+    /**
+     * Returns the derived overall score.
+     *
+     * @return the average of the three category ratings
+     */
+    public double getOverallScore() {
+        return rating.getOverallScore();
+    }
+
+    /**
+     * Returns the overall score as a string.
+     *
+     * @return the overall score as a string
+     */
+    public String getOverallScoreString() {
+        return rating.getOverallScoreString();
+    }
+
+    /**
+     * Returns the string representation of the rating.
+     *
+     * @return the rating string
+     */
+    public String getRatingString() {
+        return rating.toString();
+    }
+
+    /**
+     * Returns a string containing the tag names, sorted alphabetically
+     *
+     * @return a string containing the tag names, sorted alphabetically
+     */
+    public String getTagsAsString() {
+        return tags.stream()
+                .map(Tag::getTagName)
+                .sorted()
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Returns an unmodifiable set of tags associated with this review.
+     *
+     * @return an unmodifiable set of tags associated with this review
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns the number of tags associated with this review.
+     * @return the number of tags associated with this review
+     */
+    public int getTagCount() {
+        return tags.size();
     }
 
     /**
@@ -187,6 +263,26 @@ public class Review {
         return tagsToMatch.stream()
                 .filter(tag -> !tags.contains(tag))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Converts this review and its row index into an object array for GUI table display.
+     *
+     * @param rowIndex the 1-based index to display
+     * @return an object array representing the review row
+     */
+    public Object[] toRow(int rowIndex) {
+        String tags = getTagsAsString();
+        return new Object[]{
+            rowIndex,
+            getOverallScoreString(),
+            getFoodScoreString(),
+            getCleanlinessScoreString(),
+            getServiceScoreString(),
+            isResolved() ? "Resolved" : "Outstanding",
+            tags,
+            getReviewBody()
+        };
     }
 
     /**

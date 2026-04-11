@@ -122,9 +122,9 @@ public class Storage {
         output.add(STORAGE_HEADER);
 
         for (Review review : reviewList.getAllReviews()) {
-            output.add(KEY_FOOD + "=" + review.getRating().getFoodScore());
-            output.add(KEY_CLEANLINESS + "=" + review.getRating().getCleanlinessScore());
-            output.add(KEY_SERVICE + "=" + review.getRating().getServiceScore());
+            output.add(KEY_FOOD + "=" + review.getFoodScore());
+            output.add(KEY_CLEANLINESS + "=" + review.getCleanlinessScore());
+            output.add(KEY_SERVICE + "=" + review.getServiceScore());
             output.add(KEY_RESOLVED + "=" + review.isResolved());
             output.add(KEY_TAGS + "=" + escape(serializeTags(review.getTags())));
             output.add(KEY_BODY + "=" + escape(review.getReviewBody()));

@@ -1,13 +1,10 @@
 package application.command;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 
 import application.auth.AuthManager;
 import application.exception.InvalidArgumentException;
-import application.exception.MissingArgumentException;
-import application.parser.ArgumentParser;
 import application.review.Review;
 import application.review.ReviewList;
 import application.review.Tag;
@@ -17,28 +14,18 @@ import application.storage.Storage;
  * Class representing a command to add tags to a review.
  */
 public class AddTagsCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
     private final int index;
-    private final Set<Tag> tagsToAdd;
+    private final String tagsToAddAsString;
 
     /**
      * Constructor for AddTagCommand class.
      *
-     * @param commandArgs the arguments of the command
-     * @throws InvalidArgumentException if the index is not a number
-     * @throws MissingArgumentException if the index is missing
+     * @param index the index of the review to add tags to
+     * @param tagsToAddAsString the set of tags to add to the review
      */
-    public AddTagsCommand(Map<String, String> commandArgs)
-            throws InvalidArgumentException, MissingArgumentException {
-        String indexAsString = commandArgs.get("/default");
-        String tagsAsString = commandArgs.get("/tag");
-
-        this.index = ArgumentParser.toInt(indexAsString);
-        this.tagsToAdd = Tag.toTags(tagsAsString);
-
-        if (tagsToAdd.isEmpty()) {
-            throw new InvalidArgumentException("No tags provided!");
-        }
+    public AddTagsCommand(int index, String tagsToAddAsString) {
+        this.index = index;
+        this.tagsToAddAsString = tagsToAddAsString;
     }
 
     /**
@@ -51,26 +38,30 @@ public class AddTagsCommand extends Command {
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager
-     * @return a string representation of the command result
+     * @return a {@code CommandResult} object containing the result of the command execution
      * @throws InvalidArgumentException if any argument is in the wrong format
      */
     @Override
-    public String execute(
+    public CommandResult execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
     ) throws InvalidArgumentException, IOException {
+        Set<Tag> tagsToAdd = Tag.toTags(tagsToAddAsString);
         Review review = reviews.getReview(index);
+
         Set<Tag> existingTags = review.getMatchingTags(tagsToAdd);
         Set<Tag> nonExistentTags = review.getNonMatchingTags(tagsToAdd);
 
         nonExistentTags.forEach(review::addTag);
         storage.saveReviews(reviews);
 
-        return String.format("""
+        return new CommandResult(
+                String.format("""
                 Existing tags not added: %s
-                New tags added: %s
-                Updated review:
-                %s""", existingTags, nonExistentTags, review);
+                New tags added: %s""", existingTags, nonExistentTags),
+                isTerminatingCommand(),
+                reviews
+        );
     }
 }

@@ -8,11 +8,11 @@ import application.parser.ArgumentParser;
  * Enum representing the different criteria for ReviewList operations.
  */
 public enum Criterion {
-    OVERALL_SCORE("overall scores", review -> review.getRating().getOverallScore()),
-    FOOD_SCORE("food scores", review -> review.getRating().getFoodScore()),
-    CLEANLINESS_SCORE("clean scores", review -> review.getRating().getCleanlinessScore()),
-    SERVICE_SCORE("service scores", review -> review.getRating().getServiceScore()),
-    TAG_COUNT("tag count", review -> (double) review.getTags().size()),
+    OVERALL_SCORE("overall", Review::getOverallScore),
+    FOOD_SCORE("food", Review::getFoodScore),
+    CLEANLINESS_SCORE("cleanliness", Review::getCleanlinessScore),
+    SERVICE_SCORE("service", Review::getServiceScore),
+    TAG_COUNT("tag count", review -> (double) review.getTagCount()),
     UNKNOWN("unknown", review -> 0.0);
 
     private final String criterionString;
@@ -45,8 +45,7 @@ public enum Criterion {
         }
 
         for (Criterion criterion : Criterion.values()) {
-            if (criterion.criterionString
-                    .startsWith(criterionString.toLowerCase())) {
+            if (criterion.criterionString.startsWith(criterionString.toLowerCase())) {
                 return criterion;
             }
         }

@@ -39,34 +39,14 @@ test {
     }
 }
 
-// Support specifying main class via project property
-def mainClassName = project.findProperty("mainClass") ?: "application.Main"
-
 application {
-    mainClass.set(mainClassName)
+    mainClass.set("application.Main")
 }
 
 shadowJar {
-    archiveBaseName = "restaurantReviewer"
+    archiveBaseName = "mealMeter"
     archiveClassifier = null
-    manifest {
-        attributes 'Main-Class': mainClassName
-    }
 }
-
-// GUI fat-JAR: launches MealMeterGui directly
-task guiJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    configurations = [project.configurations.runtimeClasspath]
-    archiveBaseName = "restaurantReviewer-gui"
-    archiveClassifier = null
-    manifest {
-        attributes 'Main-Class': 'application.ui.MealMeterGui'
-    }
-}
-
-// Produce both JARs whenever `./gradlew build` or `./gradlew assemble` is run
-assemble.dependsOn guiJar
 
 run {
     standardInput = System.in

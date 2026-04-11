@@ -6,7 +6,7 @@ import application.review.ReviewList;
 
 /**
  * Represents the result of loading reviews from storage.
- * Used in MealMeter to encapsulate both the loaded reviews and any
+ * Used in MealMeterController to encapsulate both the loaded reviews and any
  * warnings that occurred during loading.
  *
  * @param reviewList the reviews loaded from storage

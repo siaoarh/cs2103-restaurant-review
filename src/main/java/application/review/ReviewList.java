@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import javax.swing.table.DefaultTableModel;
 
 import application.condition.Condition;
 import application.exception.InvalidArgumentException;
@@ -259,6 +260,18 @@ public class ReviewList {
     }
 
     /**
+     * Populates the specified table model with the reviews in this list.
+     *
+     * @param tableModel the table model to populate
+     */
+    public void populateTableModel(DefaultTableModel tableModel) {
+        tableModel.setRowCount(0);
+        for (int i = 0; i < reviews.size(); i++) {
+            tableModel.addRow(reviews.get(i).toRow(i + 1));
+        }
+    }
+
+    /**
      * Validates the specified 1-based index.
      *
      * @param index the index to validate
@@ -268,5 +281,12 @@ public class ReviewList {
         if (!isValidIndex(index)) {
             throw new InvalidArgumentException("Invalid review index!");
         }
+    }
+
+    /**
+     * Clears the list of reviews.
+     */
+    public void clear() {
+        reviews.clear();
     }
 }

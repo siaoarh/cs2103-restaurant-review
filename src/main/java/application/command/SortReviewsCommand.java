@@ -1,8 +1,5 @@
 package application.command;
 
-import java.util.Map;
-import java.util.Set;
-
 import application.auth.AuthManager;
 import application.exception.InvalidArgumentException;
 import application.review.Criterion;
@@ -14,22 +11,18 @@ import application.storage.Storage;
  * Class representing a command to sort reviews.
  */
 public class SortReviewsCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default", "/by");
-    private final SortOrder sortOrder;
-    private final Criterion sortCriterion;
-
+    private final String sortOrderAsString;
+    private final String sortCriterionAsString;
 
     /**
      * Constructor for SortReviewsCommand class.
      *
-     * @param commandArgs the arguments of the command
+     * @param sortOrderAsString the sort order of the reviews
+     * @param sortCriterionAsString the sort criterion of the reviews
      */
-    public SortReviewsCommand(Map<String, String> commandArgs) {
-        String sortOrderAsString = commandArgs.get("/default");
-        String sortCriterionAsString = commandArgs.get("/by");
-
-        this.sortOrder = SortOrder.getSortOrder(sortOrderAsString);
-        this.sortCriterion = Criterion.getCriterion(sortCriterionAsString);
+    public SortReviewsCommand(String sortOrderAsString, String sortCriterionAsString) {
+        this.sortOrderAsString = sortOrderAsString;
+        this.sortCriterionAsString = sortCriterionAsString;
     }
 
     /**
@@ -42,23 +35,20 @@ public class SortReviewsCommand extends Command {
      * @throws InvalidArgumentException if any argument is in the wrong format
      */
     @Override
-    public String execute(
+    public CommandResult execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
     ) throws InvalidArgumentException {
-        if (reviews.isEmpty()) {
-            return "No reviews to sort!";
-        }
-
+        SortOrder sortOrder = SortOrder.getSortOrder(sortOrderAsString);
+        Criterion sortCriterion = Criterion.getCriterion(sortCriterionAsString);
         ReviewList sortedReviewList = reviews.sort(sortCriterion, sortOrder, reviews);
 
-        return String.format("""
-                Sorted by %s in %s order:
-                %s
-                """,
-                sortCriterion,
-                sortOrder,
+        return new CommandResult(
+                String.format("""
+                Sorted reviews by %s in %s order!
+                """, sortCriterion, sortOrder),
+                isTerminatingCommand(),
                 sortedReviewList
         );
     }
