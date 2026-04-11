@@ -12,7 +12,7 @@ public enum Criterion {
     FOOD_SCORE("Food", Review::getFoodScore),
     CLEANLINESS_SCORE("Cleanliness", Review::getCleanlinessScore),
     SERVICE_SCORE("Service", Review::getServiceScore),
-    TAG_COUNT("Tag Count", review -> (double) review.getTags().size()),
+    TAG_COUNT("Tag Count", review -> (double) review.getTagCount()),
     UNKNOWN("Unknown", review -> 0.0);
 
     private final String criterionString;

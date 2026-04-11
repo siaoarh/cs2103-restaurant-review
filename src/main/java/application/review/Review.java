@@ -166,6 +166,14 @@ public class Review {
     }
 
     /**
+     * Returns the number of tags associated with this review.
+     * @return the number of tags associated with this review
+     */
+    public int getTagCount() {
+        return tags.size();
+    }
+
+    /**
      * Returns whether this review has been marked as resolved.
      *
      * @return {@code true} if the review is resolved, {@code false} otherwise
