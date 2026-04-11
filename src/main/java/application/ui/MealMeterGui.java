@@ -165,7 +165,8 @@ public class MealMeterGui extends JFrame implements
         if (masterIdx < 0) {
             return;
         }
-        CommandResult result = mealMeter.handleInput("unresolve " + masterIdx);
+        Command command = new UnresolveReviewCommand(masterIdx);
+        CommandResult result = mealMeter.handleInput(command);
         JOptionPane.showMessageDialog(this, result.output(), "Unresolve",
                 JOptionPane.INFORMATION_MESSAGE);
         ownerPanel.refreshTable(currentDisplayList);
