@@ -5,11 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import application.exception.InvalidArgumentException;
 
+/**
+ * Tests for ReviewList class.
+ */
 public class ReviewListTest {
     private ReviewList reviewList;
     private Review review1;
@@ -18,8 +24,16 @@ public class ReviewListTest {
     @BeforeEach
     public void setUp() throws InvalidArgumentException {
         reviewList = new ReviewList();
-        review1 = new Review("Review 1", new Rating(5.0, 5.0, 5.0), Tag.toTags("Tag1"));
-        review2 = new Review("Review 2", new Rating(1.0, 1.0, 1.0), Tag.toTags("Tag2"));
+        review1 = new Review(
+                "Review 1",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("Tag1")
+        );
+        review2 = new Review(
+                "Review 2",
+                new Rating(1.0, 1.0, 1.0),
+                Tag.toTags("Tag2")
+        );
         reviewList.addReview(review1);
         reviewList.addReview(review2);
     }
@@ -34,14 +48,18 @@ public class ReviewListTest {
     @Test
     public void constructor_withList_success() {
         // Partition: Constructor with existing list
-        ReviewList list = new ReviewList(java.util.List.of(review1, review2));
+        ReviewList list = new ReviewList(List.of(review1, review2));
         assertEquals(2, list.size());
     }
 
     @Test
     public void addAndDelete_success() throws InvalidArgumentException {
         // Partition: Add and delete reviews
-        Review review3 = new Review("Review 3", new Rating(3.0, 3.0, 3.0), new java.util.HashSet<>());
+        Review review3 = new Review(
+                "Review 3",
+                new Rating(3.0, 3.0, 3.0),
+                new HashSet<>()
+        );
         reviewList.addReview(review3);
         assertEquals(3, reviewList.size());
 
@@ -72,8 +90,8 @@ public class ReviewListTest {
         // Partition: Filter by include tag
         ReviewList filtered = reviewList.filter(
                 Tag.toTags("Tag1"),
-                new java.util.HashSet<>(),
-                new java.util.HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>(),
                 null
         );
         assertEquals(1, filtered.size());
@@ -81,9 +99,9 @@ public class ReviewListTest {
 
         // Partition: Filter by exclude tag
         filtered = reviewList.filter(
-                new java.util.HashSet<>(),
+                new HashSet<>(),
                 Tag.toTags("Tag1"),
-                new java.util.HashSet<>(),
+                new HashSet<>(),
                 null
         );
         assertEquals(1, filtered.size());
@@ -92,9 +110,9 @@ public class ReviewListTest {
         // Partition: Filter by resolved status
         reviewList.markResolved(1);
         filtered = reviewList.filter(
-                new java.util.HashSet<>(),
-                new java.util.HashSet<>(),
-                new java.util.HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>(),
                 true
         );
         assertEquals(1, filtered.size());

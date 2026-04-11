@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import application.review.ReviewList;
 
+/**
+ * Tests for StorageLoadResult class.
+ */
 public class StorageLoadResultTest {
 
     @Test

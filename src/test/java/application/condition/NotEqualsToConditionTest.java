@@ -14,13 +14,20 @@ import application.review.Rating;
 import application.review.Review;
 import application.review.Tag;
 
+/**
+ * Tests for NotEqualsToCondition class.
+ */
 public class NotEqualsToConditionTest {
     private Review review;
 
     @BeforeEach
     public void setUp() throws InvalidArgumentException {
         // Overall: 3.0, Food: 4.0, Clean: 3.0, Service: 2.0, Tags: 1
-        review = new Review("Review", new Rating(4.0, 3.0, 2.0), Tag.toTags("Tag1"));
+        review = new Review(
+                "Review",
+                new Rating(4.0, 3.0, 2.0),
+                Tag.toTags("Tag1")
+        );
     }
 
     @Test

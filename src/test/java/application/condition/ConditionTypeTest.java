@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the ConditionType enum.
+ */
 public class ConditionTypeTest {
 
     @Test

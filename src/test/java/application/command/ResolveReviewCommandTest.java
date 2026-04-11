@@ -20,6 +20,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the ResolveReviewCommand class.
+ */
 public class ResolveReviewCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -34,7 +37,12 @@ public class ResolveReviewCommandTest {
         authManager = new AuthManager("password");
 
         // Pre-populate with one outstanding review at index 1
-        reviewList.addReview(new Review("Body", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag1")));
+        reviewList.addReview(new Review(
+                "Body",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag1")
+                )
+        );
     }
 
     @AfterEach

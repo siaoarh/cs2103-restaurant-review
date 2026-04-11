@@ -21,6 +21,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the FilterReviewsCommand class.
+ */
 public class FilterReviewsCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -35,10 +38,10 @@ public class FilterReviewsCommandTest {
         authManager = new AuthManager("password");
 
         // Review 1: tag1, food=5.0, resolved=false
-        reviewList.addReview(
-                new Review("R1",
+        Review r1 = new Review(
+                "R1",
                 new Rating(5.0, 5.0, 5.0),
-                Tag.toTags("tag1"))
+                Tag.toTags("tag1")
         );
         // Review 2: tag2, food=3.0, resolved=true
         Review r2 = new Review(
@@ -47,6 +50,8 @@ public class FilterReviewsCommandTest {
                 Tag.toTags("tag2")
         );
         r2.markResolved();
+        
+        reviewList.addReview(r1);
         reviewList.addReview(r2);
     }
 

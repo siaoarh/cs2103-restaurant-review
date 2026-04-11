@@ -23,7 +23,7 @@ import application.review.ReviewList;
 import application.review.Tag;
 
 /**
- * Tests for txt-file based Storage class.
+ * Tests for text-file-based Storage class.
  */
 public class StorageTest {
     private Path tempDirectory;

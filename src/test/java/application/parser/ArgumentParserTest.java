@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 
+/**
+ * Tests for ArgumentParser class.
+ */
 public class ArgumentParserTest {
 
     @Test

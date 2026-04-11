@@ -11,6 +11,9 @@ import application.auth.AuthManager;
 import application.review.ReviewList;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the LogoutCommand class.
+ */
 public class LogoutCommandTest {
     private static final String PASSWORD = "secret";
     private ReviewList reviewList;

@@ -8,6 +8,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the Tag class.
+ */
 public class TagTest {
 
     @Test

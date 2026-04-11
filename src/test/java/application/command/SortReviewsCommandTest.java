@@ -21,6 +21,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the SortReviewsCommand class.
+ */
 public class SortReviewsCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -35,9 +38,19 @@ public class SortReviewsCommandTest {
         authManager = new AuthManager("password");
 
         // R1: food 5.0
-        reviewList.addReview(new Review("R1", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag")));
+        reviewList.addReview(new Review(
+                "R1",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag")
+                )
+        );
         // R2: food 3.0
-        reviewList.addReview(new Review("R2", new Rating(3.0, 3.0, 3.0), Tag.toTags("tag")));
+        reviewList.addReview(new Review(
+                "R2",
+                new Rating(3.0, 3.0, 3.0),
+                Tag.toTags("tag")
+                )
+        );
     }
 
     @AfterEach

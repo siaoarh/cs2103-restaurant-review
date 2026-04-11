@@ -21,6 +21,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the UnresolveReviewCommand class.
+ */
 public class UnresolveReviewCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -35,7 +38,11 @@ public class UnresolveReviewCommandTest {
         authManager = new AuthManager("password");
 
         // Pre-populate with one resolved review at index 1
-        Review r1 = new Review("Body", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag1"));
+        Review r1 = new Review(
+                "Body",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag1")
+        );
         r1.markResolved();
         reviewList.addReview(r1);
     }

@@ -11,6 +11,9 @@ import application.auth.AuthManager;
 import application.review.ReviewList;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the LoginCommand class.
+ */
 public class LoginCommandTest {
     private static final String CORRECT_PASSWORD = "secret";
     private ReviewList reviewList;

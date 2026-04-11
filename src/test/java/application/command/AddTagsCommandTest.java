@@ -21,6 +21,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the AddTagsCommand class.
+ */
 public class AddTagsCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -35,7 +38,11 @@ public class AddTagsCommandTest {
         authManager = new AuthManager("password");
 
         // Pre-populate with one review at index 1
-        reviewList.addReview(new Review("Body", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag1")));
+        reviewList.addReview(new Review(
+                "Body",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag1"))
+        );
     }
 
     @AfterEach

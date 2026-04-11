@@ -13,6 +13,9 @@ import application.condition.EqualsToCondition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 
+/**
+ * Tests for ConditionParser class.
+ */
 public class ConditionParserTest {
 
     @Test

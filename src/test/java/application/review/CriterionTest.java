@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import application.exception.InvalidArgumentException;
 
+/**
+ * Tests for Criterion enum.
+ */
 public class CriterionTest {
 
     @Test

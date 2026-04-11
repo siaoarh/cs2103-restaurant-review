@@ -22,6 +22,9 @@ import application.review.ReviewList;
 import application.review.Tag;
 import application.storage.Storage;
 
+/**
+ * Class representing a test for the DeleteTagsCommand class.
+ */
 public class DeleteTagsCommandTest {
     private ReviewList reviewList;
     private Storage storage;
@@ -36,7 +39,12 @@ public class DeleteTagsCommandTest {
         authManager = new AuthManager("password");
 
         // Pre-populate with one review at index 1 with tags
-        reviewList.addReview(new Review("Body", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag1, tag2")));
+        reviewList.addReview(new Review(
+                "Body",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag1, tag2")
+                )
+        );
     }
 
     @AfterEach

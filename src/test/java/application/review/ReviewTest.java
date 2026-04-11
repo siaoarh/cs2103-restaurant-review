@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import application.exception.InvalidArgumentException;
 
+/**
+ * Tests for Review class.
+ */
 public class ReviewTest {
     private Rating rating;
     private Set<Tag> tags;

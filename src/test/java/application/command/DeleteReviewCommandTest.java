@@ -35,7 +35,12 @@ public class DeleteReviewCommandTest {
         authManager = new AuthManager("password");
 
         // Pre-populate with one review at index 1
-        reviewList.addReview(new Review("Body", new Rating(5.0, 5.0, 5.0), Tag.toTags("tag1")));
+        reviewList.addReview(new Review(
+                "Body",
+                new Rating(5.0, 5.0, 5.0),
+                Tag.toTags("tag1")
+                )
+        );
     }
 
     @AfterEach

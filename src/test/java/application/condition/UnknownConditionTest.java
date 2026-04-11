@@ -12,12 +12,19 @@ import application.review.Rating;
 import application.review.Review;
 import application.review.Tag;
 
+/**
+ * Tests for UnknownCondition class.
+ */
 public class UnknownConditionTest {
     private Review review;
 
     @BeforeEach
     public void setUp() throws InvalidArgumentException {
-        review = new Review("Review", new Rating(4.0, 3.0, 2.0), Tag.toTags("Tag1"));
+        review = new Review(
+                "Review",
+                new Rating(4.0, 3.0, 2.0),
+                Tag.toTags("Tag1")
+        );
     }
 
     @Test

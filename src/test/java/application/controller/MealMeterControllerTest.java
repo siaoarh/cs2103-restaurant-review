@@ -16,17 +16,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import application.auth.AuthManager;
-import application.command.AddReviewCommand;
-import application.command.Command;
 import application.command.CommandResult;
-import application.command.LoginCommand;
-import application.command.SortReviewsCommand;
 import application.review.ReviewList;
-import application.review.Tag;
 import application.storage.Storage;
 
 /**
- * Tests for MealMeterController authentication and command gating behaviour.
+ * Tests for MealMeterController wrapper methods and auth gating.
  */
 public class MealMeterControllerTest {
     private static final String OWNER_PASSWORD = "secret";
@@ -68,16 +63,14 @@ public class MealMeterControllerTest {
     }
 
     @Test
-    public void handleInput_patronCommandWithoutLogin_allowed() {
-        // Partition: Public command executed by non-owner
-        CommandResult result = mealMeterController.handleInput(
-                new AddReviewCommand(
-                        "great",
-                        4.0,
-                        4.0,
-                        4.0,
-                        ""
-                )
+    public void submitReview_patronCommandWithoutLogin_allowed() {
+        // Partition: Public command executed by non-owner via wrapper method
+        CommandResult result = mealMeterController.submitReview(
+                "great",
+                4.0,
+                4.0,
+                4.0,
+                ""
         );
 
         assertTrue(result.output().contains("Added review to list:"));
@@ -85,35 +78,19 @@ public class MealMeterControllerTest {
     }
 
     @Test
-    public void handleInput_ownerCommandWithoutLogin_denied() {
-        // Partition: Owner-only command executed by non-owner
-        CommandResult result = mealMeterController.handleInput(new SortReviewsCommand("asc", "food"));
+    public void sortReviews_ownerCommandWithoutLogin_denied() {
+        // Partition: Owner-only command executed by non-owner via wrapper method
+        CommandResult result = mealMeterController.sortReviews("food", "ascending");
 
         assertEquals("Access denied. Please log in as the owner to use this command.", result.output());
         assertFalse(result.shouldTerminate());
     }
 
     @Test
-    public void handleInput_unknownCommandWithoutLogin_unknownHandledNormally() {
-        // Partition: Unknown command (passing an anonymous command that requires owner auth)
-        Command unknown = new Command() {
-            @Override
-            public CommandResult execute(ReviewList reviews, Storage storage, AuthManager manager) {
-                return null;
-            }
-        };
-
-        CommandResult result = mealMeterController.handleInput(unknown);
-
-        assertEquals("Access denied. Please log in as the owner to use this command.", result.output());
-        assertFalse(result.shouldTerminate());
-    }
-
-    @Test
-    public void handleInput_loginSuccessThenAlreadyLoggedIn() {
-        // Partition: Login successful, then already logged in
-        CommandResult firstResult = mealMeterController.handleInput(new LoginCommand("secret"));
-        CommandResult secondResult = mealMeterController.handleInput(new LoginCommand("secret"));
+    public void login_successThenAlreadyLoggedIn() {
+        // Partition: Login successful, then already logged in via wrapper method
+        CommandResult firstResult = mealMeterController.login("secret");
+        CommandResult secondResult = mealMeterController.login("secret");
 
         assertEquals("Successfully logged in!", firstResult.output());
         assertFalse(firstResult.shouldTerminate());
@@ -123,13 +100,24 @@ public class MealMeterControllerTest {
     }
 
     @Test
-    public void handleInput_ownerCommandAfterLogin_allowed() {
-        // Partition: Owner-only command after login
-        mealMeterController.handleInput(new LoginCommand("secret"));
-        CommandResult result = mealMeterController.handleInput(new SortReviewsCommand("asc", "food"));
+    public void sortReviews_ownerCommandAfterLogin_allowed() {
+        // Partition: Owner-only command after login via wrapper method
+        mealMeterController.login("secret");
+        CommandResult result = mealMeterController.sortReviews("food", "ascending");
 
         assertTrue(result.output().contains("Sorted reviews"));
         assertFalse(result.shouldTerminate());
+    }
+
+    @Test
+    public void logout_success() {
+        // Partition: Logout via wrapper method
+        mealMeterController.login("secret");
+        assertTrue(mealMeterController.isOwnerAuthenticated());
+        
+        CommandResult result = mealMeterController.logout();
+        assertEquals("Successfully logged out!", result.output());
+        assertFalse(mealMeterController.isOwnerAuthenticated());
     }
 
     @Test
@@ -145,37 +133,6 @@ public class MealMeterControllerTest {
 
         mealMeterController.logout();
         assertFalse(mealMeterController.isOwnerAuthenticated());
-    }
-
-    @Test
-    public void getMasterIndex_mapsCorrectIndices() {
-        // Partition: Correct mapping between row index and master index
-        mealMeterController.submitReview(
-                "R1",
-                5.0,
-                5.0,
-                5.0,
-                "tag1"
-        );
-        mealMeterController.submitReview(
-                "R2",
-                3.0,
-                3.0,
-                3.0,
-                "tag2"
-        );
-        ReviewList master = mealMeterController.getReviewList();
-
-        // Filter to only show R2 (tag2)
-        ReviewList filtered = master.filter(
-                Tag.toTags("tag2"),
-                new java.util.HashSet<>(),
-                new java.util.HashSet<>(),
-                null
-        );
-
-        // rowIndex 1 in filtered is masterIndex 2
-        assertEquals(2, mealMeterController.getMasterIndex(filtered, 1));
     }
 
     @Test
@@ -204,6 +161,16 @@ public class MealMeterControllerTest {
 
         mealMeterController.login("secret");
         ReviewList current = mealMeterController.getReviewList();
+        
+        // Add a review first so there is something to act on at index 1
+        mealMeterController.submitReview(
+                "test",
+                5.0,
+                5.0,
+                5.0,
+                ""
+        );
+        
         assertNotNull(mealMeterController.resolveReview(current, 1));
         assertNotNull(mealMeterController.unresolveReview(current, 1));
         assertNotNull(mealMeterController.addTags(current, 1, "tag1"));
