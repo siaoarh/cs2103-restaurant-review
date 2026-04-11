@@ -6,8 +6,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-import application.MealMeterController;
 import application.command.CommandResult;
+import application.controller.MealMeterController;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -20,7 +20,7 @@ import application.review.ReviewList;
  * command strings passed to the backend (MVC controller layer).</p>
  */
 public class MealMeterGui extends JFrame implements
-        PatronPanel.PatronPanelListener, OwnerPanel.OwnerPanelListener {
+        PatronPanelListener, OwnerPanelListener {
 
     private static final int WINDOW_WIDTH = 1100;
     private static final int WINDOW_HEIGHT = 750;
