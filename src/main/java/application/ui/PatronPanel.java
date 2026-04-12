@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import application.review.Rating;
 
 /**
  * Patron feedback submission panel for MealMeterController GUI.
@@ -128,15 +131,21 @@ public class PatronPanel extends JPanel {
     }
 
     private JSpinner createRatingSpinner() {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(3.0, 1.0, 5.0, 0.5));
+        SpinnerNumberModel model = new SpinnerNumberModel(3.0, Rating.RATING_MIN, Rating.RATING_MAX, 0.5);
+        JSpinner spinner = new JSpinner(model);
         spinner.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        spinner.setEditor(new JSpinner.NumberEditor(spinner, "0.0"));
+
+        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.0");
+        editor.getTextField().setEditable(false);
+
+        spinner.setEditor(editor);
         spinner.setOpaque(false);
+
         return spinner;
     }
 
     private JPanel createRatingPanel() {
-        JPanel panel = new JPanel(new java.awt.GridLayout(1, 3, 15, 0));
+        JPanel panel = new JPanel(new GridLayout(1, 3, 15, 0));
         panel.setOpaque(false);
 
         String[] labels = {"Food Quality", "Cleanliness", "Service"};
