@@ -14,28 +14,30 @@ Submitted feedback is processed by the application and stored locally for later 
 ---
 
 ## Architecture Design
-The system follows a **Model-View-Controller (MVC) design pattern** consisting of:
+A `Main` class is the main entry point of the application, which initialises the UI and controller.
 
-- **View: User Interface Layer**
-- **Controller: Controller Layer**
-- **Model: Model Layer**
+The system follows a 4-layer architecture structure consisting of:
 
-This architecture separates user interaction, application logic, and data persistence so that each part of the system remains easier to maintain, extend, and test.
+- `Ui`: the UI of the application
+- `Logic`: The command execution layer
+- `Model`: Holds the data of the application in memory
+- `Storage`: Reads data from, and writes data to, the hard disk
 
 ### Architecture Diagram
+
 ![Architecture Diagram](/docs/architecture/architecture-diagram.jpg)
 
 ---
 
 ## Major System Components
 
-### 1. User Interface Layer
+### 1. `Ui` Component
 
 #### Responsibilities
-- Displays the review submission form
-- Displays the list of reviews
-- Allows users to enter commands or interact through GUI controls
-- Shows system messages and feedback to the user
+- Displays the Patron Feedback Panel to submit reviews
+- Displays the Owner Management Panel to manage reviews
+- Allows users to interact with the model via GUI elements, with the Controller acting as the intermediary
+- Shows system messages and feedback after an action is completed
 
 #### Key Classes
 - `MealMeterGui`
@@ -44,29 +46,43 @@ This architecture separates user interaction, application logic, and data persis
 
 ---
 
-### 2. Logic Layer
+### 2. `Logic` Component
 
 #### Responsibilities
-- Determines how user input should be handled
-- Parses user commands and executes the appropriate actions
+- Parses user input and converts it into command objects
+- Executes user actions as commands on the model
 - Validates user input
 - Handles sorting and filtering of reviews
 - Manages review objects and review collections
 - Coordinates saving and loading through the storage layer
+- Handles user authentication
 
 #### Key Classes
-- `CommandParser`
+- `AuthManager`
 - `Command`
-- `Review`
-- `ReviewList`
-- `Rating`
-- `Tag`
+- `Condition`
+- `MealMeterController`
 - `ArgumentParser`
-- `FileParser`
+- `ConditionParser`
+- `Criterion`
+- `SortOrder`
 
 ---
 
-### 3. Storage Layer
+### 3. `Model` Component
+
+#### Responsibilities
+- Stores and manages review objects
+- Manages review collections
+- Manages reviews
+
+#### Key Classes
+- `Rating`
+- `Review`
+- `ReviewList`
+- `Tag`
+
+### 4. Storage Layer
 
 #### Responsibilities
 - Loads reviews from a text file when the application starts
@@ -80,10 +96,38 @@ This architecture separates user interaction, application logic, and data persis
 
 ## UML Diagrams
 
-### Class Diagram
-The class diagram below shows the main classes in the system and the relationships between them.
+#### `Ui` Class Diagram
+![Ui Class Diagram](/docs/architecture/ui-class-diagram.png)
 
-![Class Diagram](/docs/architecture/class-diagram.png)
+#### `Logic` Class Diagram
+![Logic Class Diagram](/docs/architecture/logic-class-diagram.png)
+
+The above depicts a (partial) class diagram of the `Logic` component. Not depicted are the `Command` subclasses and
+their individual dependencies to the enums and the model components.
+
+As seen in the diagram, the main activity of this component is to intepret user input from the `Ui` and execute the
+corresponding command on the `Model`. This is done so via `MealMeterController`, which creates the appropriate `Command`
+(e.g. `AddReviewCommand`) object and executes it, returing a `CommandResult` object to the `Ui` to display to the user.
+
+The `AuthManager` class is responsible for managing the authentication state of the application. Based on administrator
+requirements, `Command` objects may require authentication to be executed.
+
+The `Condition` subclasses are used by `FilterReviewsCommand`, while the `Criterion` and `SortOrder` enumerations are
+used by `SortReviewsCommand`.
+
+Any `Command` that changes the `Model` will invoke `Storage` to save the updated model to the data file.
+
+### `Model` Class Diagram
+![Model Class Diagram](/docs/architecture/model-class-diagram.png)
+
+The above depicts the class diagram of the `Model` component. This component stores the `Review` information of the
+application in memory. The `Model` offers wrapper methods for the `Logic` component to access and manipulate the data.
+
+The `Model` loaded into memory is done by the `Storage` component on application initialisation and is saved by the
+`Command` objects whenever a change is made to the data via the `Storage` component.
+
+### `Storage` Class Diagram
+![Storage Class Diagram](/docs/architecture/storage-class-diagram.png)
 
 ### Sequence Diagrams
 ![Sequence Diagram](/docs/architecture/seq-diagram-init-and-end.png)
