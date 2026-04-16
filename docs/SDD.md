@@ -375,10 +375,3 @@ makes future enhancements easier to implement.
 ### Local File Storage
 The system uses local file-based storage instead of a server-based backend. This keeps deployment simple and aligns
 with the intended lightweight desktop application design.
-
----
-
-## Planned Diagrams to Include
-The following supporting diagrams should be added to complete this document:
-
-- Sequence diagram for deleting a review
