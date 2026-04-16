@@ -2,6 +2,7 @@ package application.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import application.review.ReviewList;
 import application.review.Tag;
 
 /**
- * Tests for txt-file based Storage class.
+ * Tests for text-file-based Storage class.
  */
 public class StorageTest {
     private Path tempDirectory;
@@ -54,7 +55,15 @@ public class StorageTest {
     }
 
     @Test
+    public void constructor_default_success() {
+        // Partition: Default constructor (uses default path)
+        Storage defaultStorage = new Storage();
+        assertNotNull(defaultStorage);
+    }
+
+    @Test
     public void loadReviews_missingFile_createsDirectoriesAndFile() throws IOException {
+        // Partition: File does not exist initially
         assertFalse(Files.exists(storagePath));
 
         ReviewList loaded = storage.loadReviews();
@@ -66,6 +75,7 @@ public class StorageTest {
 
     @Test
     public void saveAndLoad_roundTrip_preservesAllFields() throws InvalidArgumentException, IOException {
+        // Partition: Valid ReviewList with various fields
         ReviewList reviews = new ReviewList();
         Review review = new Review(
                 "Food was good but waiting time was too long.",
@@ -80,9 +90,9 @@ public class StorageTest {
 
         assertEquals(1, loaded.size());
         Review loadedReview = loaded.getReview(1);
-        assertEquals(4.5, loadedReview.getRating().getFoodScore(), 0.0001);
-        assertEquals(4.0, loadedReview.getRating().getCleanlinessScore(), 0.0001);
-        assertEquals(3.5, loadedReview.getRating().getServiceScore(), 0.0001);
+        assertEquals(4.5, loadedReview.getFoodScore(), 0.0001);
+        assertEquals(4.0, loadedReview.getCleanlinessScore(), 0.0001);
+        assertEquals(3.5, loadedReview.getServiceScore(), 0.0001);
         assertTrue(loadedReview.isResolved());
         assertTrue(loadedReview.getTags().contains(new Tag("service")));
         assertTrue(loadedReview.getTags().contains(new Tag("slow delivery")));
@@ -92,6 +102,7 @@ public class StorageTest {
     @Test
     public void saveAndLoad_bodyEscaping_preservesNewlinesAndBackslashes()
             throws InvalidArgumentException, IOException {
+        // Partition: Review body with special characters needing escaping
         String body = "Line1\\folder\\file\nLine2\\next";
         ReviewList reviews = new ReviewList();
         reviews.addReview(new Review(body, new Rating(5.0, 4.0, 3.0), Tag.toTags("path")));
@@ -104,6 +115,7 @@ public class StorageTest {
 
     @Test
     public void loadReviews_malformedBlock_skipsOnlyMalformedBlock() throws IOException, InvalidArgumentException {
+        // Partition: File contains some malformed blocks (skipping strategy)
         List<String> lines = List.of(
                 "MEALMETER_V1",
                 "food=4.0",
@@ -141,7 +153,25 @@ public class StorageTest {
     }
 
     @Test
+    public void loadReviewsWithWarnings_returnsWarnings() throws IOException {
+        // Partition: Check warnings return on malformed data
+        List<String> lines = List.of(
+                "MEALMETER_V1",
+                "food=INVALID",
+                "body=test",
+                "---"
+        );
+        Files.createDirectories(storagePath.getParent());
+        Files.write(storagePath, lines, StandardCharsets.UTF_8);
+
+        StorageLoadResult result = storage.loadReviewsWithWarnings();
+        assertEquals(0, result.reviewList().size());
+        assertFalse(result.warnings().isEmpty());
+    }
+
+    @Test
     public void saveReviews_multipleCalls_overwritesPreviousContent() throws InvalidArgumentException, IOException {
+        // Partition: Overwriting existing file content
         ReviewList first = new ReviewList();
         first.addReview(new Review("first", new Rating(5.0, 5.0, 5.0), Tag.toTags("one")));
         storage.saveReviews(first);

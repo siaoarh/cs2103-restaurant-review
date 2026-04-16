@@ -269,4 +269,11 @@ public class ReviewList {
             throw new InvalidArgumentException("Invalid review index!");
         }
     }
+
+    /**
+     * Clears the list of reviews.
+     */
+    public void clear() {
+        reviews.clear();
+    }
 }

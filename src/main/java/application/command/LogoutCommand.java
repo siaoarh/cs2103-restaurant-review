@@ -15,22 +15,31 @@ public class LogoutCommand extends Command {
 
     /**
      * Executes the logout command.
+     *
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager
-     * @return a string indicating the result of the logout command
+     * @return a {@code CommandResult} object containing the result of the command execution
      */
     @Override
-    public String execute(
+    public CommandResult execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
     ) {
         if (manager.isOwnerAuthenticated()) {
             manager.logout();
-            return "Successfully logged out!";
+            return new CommandResult(
+                    "Successfully logged out!",
+                    isTerminatingCommand(),
+                    reviews
+            );
         }
 
-        return "You are not logged in!";
+        return new CommandResult(
+                "You are not logged in!",
+                isTerminatingCommand(),
+                reviews
+        );
     }
 }

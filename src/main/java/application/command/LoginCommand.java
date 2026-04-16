@@ -1,11 +1,7 @@
 package application.command;
 
-import java.util.Map;
-import java.util.Set;
 
 import application.auth.AuthManager;
-import application.exception.MissingArgumentException;
-import application.parser.ArgumentParser;
 import application.review.ReviewList;
 import application.storage.Storage;
 
@@ -13,20 +9,15 @@ import application.storage.Storage;
  * Represents a login command.
  */
 public class LoginCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default");
     private final String password;
 
     /**
      * Constructor for LoginCommand class.
-     * @param commandArgs the arguments of the command
-     * @throws MissingArgumentException if the password is missing
+     *
+     * @param password the password to authenticate with
      */
-    public LoginCommand(Map<String, String> commandArgs) throws MissingArgumentException {
-        String rawPassword = commandArgs.get("/default");
-        if (!ArgumentParser.isValidString(rawPassword)) {
-            throw new MissingArgumentException("Please enter a valid password.");
-        }
-        this.password = rawPassword.trim();
+    public LoginCommand(String password) {
+        this.password = password;
     }
 
     @Override
@@ -36,22 +27,31 @@ public class LoginCommand extends Command {
 
     /**
      * Executes the login command.
+     *
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager
-     * @return a string indicating the result of the login command
+     * @return a {@code CommandResult} object containing the result of the command execution
      */
     @Override
-    public String execute(
+    public CommandResult execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
     ) {
         if (manager.isOwnerAuthenticated()) {
-            return "You are already logged in!";
+            return new CommandResult(
+                    "You are already logged in!",
+                    isTerminatingCommand(),
+                    reviews
+            );
         }
 
         boolean isLoggedIn = manager.authenticateOwner(password);
-        return isLoggedIn ? "Successfully logged in!" : "Incorrect password!";
+        return new CommandResult(
+                isLoggedIn ? "Successfully logged in!" : "Incorrect password!",
+                isTerminatingCommand(),
+                reviews
+        );
     }
 }

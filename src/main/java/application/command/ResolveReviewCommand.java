@@ -1,13 +1,9 @@
 package application.command;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
 import application.auth.AuthManager;
 import application.exception.InvalidArgumentException;
-import application.exception.MissingArgumentException;
-import application.parser.ArgumentParser;
 import application.review.Review;
 import application.review.ReviewList;
 import application.storage.Storage;
@@ -16,20 +12,15 @@ import application.storage.Storage;
  * Class representing a command to resolve a review.
  */
 public class ResolveReviewCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default");
     private final int index;
 
     /**
      * Constructor for ResolveReviewCommand class.
      *
-     * @param commandArgs the arguments of the command
-     * @throws InvalidArgumentException if the index is not a number
-     * @throws MissingArgumentException if the index is missing
+     * @param index the index of the review to resolve
      */
-    public ResolveReviewCommand(Map<String, String> commandArgs)
-            throws InvalidArgumentException, MissingArgumentException {
-        String indexAsString = commandArgs.get("/default");
-        this.index = ArgumentParser.toInt(indexAsString);
+    public ResolveReviewCommand(int index) {
+        this.index = index;
     }
 
     /**
@@ -38,11 +29,11 @@ public class ResolveReviewCommand extends Command {
      * @param reviews the list of reviews
      * @param storage the storage object
      * @param manager the authentication manager
-     * @return a string representation of the command result
+     * @return a {@code CommandResult} object containing the result of the command execution
      * @throws InvalidArgumentException if the index is in the wrong format
      */
     @Override
-    public String execute(
+    public CommandResult execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
@@ -50,6 +41,10 @@ public class ResolveReviewCommand extends Command {
         Review review = reviews.markResolved(index);
         storage.saveReviews(reviews);
 
-        return String.format("%s\nmarked as resolved!", review);
+        return new CommandResult(
+                String.format("Review %d marked as resolved!", index),
+                isTerminatingCommand(),
+                reviews
+        );
     }
 }

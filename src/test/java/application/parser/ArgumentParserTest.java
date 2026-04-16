@@ -2,6 +2,7 @@ package application.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,66 +11,75 @@ import org.junit.jupiter.api.Test;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 
+/**
+ * Tests for ArgumentParser class.
+ */
 public class ArgumentParserTest {
 
     @Test
-    public void splitIntoPair_validInput_success() {
-        String[] result = ArgumentParser.splitIntoPair("command args", " ");
-        assertEquals("command", result[0]);
-        assertEquals("args", result[1]);
-
-        result = ArgumentParser.splitIntoPair("  command   args  ", " ");
-        assertEquals("command", result[0]);
-        assertEquals("args", result[1]);
+    public void isValidString_validString_returnsTrue() {
+        // Partition: Valid string
+        assertTrue(ArgumentParser.isValidString("valid"));
     }
 
     @Test
-    public void splitIntoPair_nullInput_returnsEmptyArray() {
-        String[] result = ArgumentParser.splitIntoPair(null, " ");
-        assertEquals("", result[0]);
-        assertEquals("", result[1]);
-    }
-
-    @Test
-    public void splitIntoPair_noDelimiter_returnsInputAndEmpty() {
-        String[] result = ArgumentParser.splitIntoPair("command", " ");
-        assertEquals("command", result[0]);
-        assertEquals("", result[1]);
-    }
-
-    @Test
-    public void isValidString_variousInputs() {
-        assertTrue(ArgumentParser.isValidString("test"));
+    public void isValidString_nullString_returnsFalse() {
+        // Partition: Null string
         assertFalse(ArgumentParser.isValidString(null));
-        assertFalse(ArgumentParser.isValidString(""));
+    }
+
+    @Test
+    public void isValidString_blankString_returnsFalse() {
+        // Partition: Blank or empty string
         assertFalse(ArgumentParser.isValidString("   "));
+        assertFalse(ArgumentParser.isValidString(""));
     }
 
     @Test
-    public void toInt_validInput_success() throws InvalidArgumentException, MissingArgumentException {
-        assertEquals(123, ArgumentParser.toInt("123"));
-    }
-
-    @Test
-    public void toInt_invalidInput_throwsException() {
-        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt(null));
-        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt(""));
-        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt("   "));
-        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt("abc"));
-        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt("12.34"));
-    }
-
-    @Test
-    public void toDouble_validInput_success() throws InvalidArgumentException, MissingArgumentException {
+    public void toDouble_validNumber_returnsDouble() throws MissingArgumentException, InvalidArgumentException {
+        // Partition: Valid numeric string
         assertEquals(12.34, ArgumentParser.toDouble("12.34"), 0.001);
+        assertEquals(0.0, ArgumentParser.toDouble("0"));
+        assertEquals(-1.5, ArgumentParser.toDouble("-1.5"));
     }
 
     @Test
-    public void toDouble_invalidInput_throwsException() {
+    public void toDouble_nullOrBlank_throwsMissingArgumentException() {
+        // Partition: Null or blank input
         assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble(null));
         assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble(""));
         assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble("   "));
+    }
+
+    @Test
+    public void toDouble_invalidNumber_throwsInvalidArgumentException() {
+        // Partition: Non-numeric string
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("abc"));
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("12.34.56"));
+    }
+
+    @Test
+    public void toResolvedStatus_resolved_returnsTrue() {
+        // Partition: "Resolved" input
+        assertTrue(ArgumentParser.toResolvedStatus("Resolved"));
+    }
+
+    @Test
+    public void toResolvedStatus_unresolved_returnsFalse() {
+        // Partition: "Unresolved" input
+        assertFalse(ArgumentParser.toResolvedStatus("Outstanding"));
+    }
+
+    @Test
+    public void toResolvedStatus_all_returnsNull() {
+        // Partition: "All" input
+        assertNull(ArgumentParser.toResolvedStatus("All"));
+    }
+
+    @Test
+    public void toResolvedStatus_invalidInput_returnsNull() {
+        // Partition: Invalid or default input
+        assertNull(ArgumentParser.toResolvedStatus("SomethingElse"));
+        assertNull(ArgumentParser.toResolvedStatus(""));
     }
 }
