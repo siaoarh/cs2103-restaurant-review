@@ -129,9 +129,17 @@ The `Model` loaded into memory is done by the `Storage` component on application
 ### `Storage` Class Diagram
 ![Storage Class Diagram](/docs/architecture/storage-class-diagram.png)
 
+The above depicts the class diagram of the `Storage` component. This component is responsible for loading and saving
+`Review` objects to the data file. During initialisation, the `Storage` component will attempt to load reviews from
+the specified path (default: `data/reviews.txt`).
+
+A `StorageLoadResult` object is returned to the `Logic` component to
+indicate if any errors occurred during loading or if the data file was successfully loaded, as well as the loaded
+`ReviewList`.
+
 ### Sequence Diagrams
 This section depicts the sequence diagrams of the application. The diagrams are non-exhaustive and only show the
-important parts of the application. For simplicity's sake, the sequence diagrams do not depict internal `MealMeterGui`
+important parts of the application. For brevity, the sequence diagrams do not depict internal `MealMeterGui`
 interactions.
 
 #### Feature: Adding a Review
@@ -147,6 +155,8 @@ interactions.
 #### Feature: Adding Tags to a Review
 ![Sequence Diagram](/docs/architecture/seq-diagram-add-tag.png)
 
+The constructor of `Tag` is not shown in the diagram but is called when the static method `toTags()` is called.
+
 ---
 
 #### Feature: Sorting Reviews
@@ -157,6 +167,9 @@ interactions.
 #### Feature: Filtering Reviews
 ![Sequence Diagram](/docs/architecture/seq-diagram-filter.png)
 
+The constructors of `Tag`, `Condition` and `Criterion` are not shown in the diagram.
+The `Tag` constructor is called when the static method `toTags()` is called.
+The `Condition` and `Criterion` constructors are called when the static method `toConditions()` is called.
 ---
 
 ### Use Case Diagram
@@ -171,6 +184,9 @@ Additionally, as stated in the [Logic class diagram section](#logic-class-diagra
 will invoke the storage layer to save the updated model to the data file.
 
 ### Use Cases
+
+The application supports the following use cases. This section is non-exhaustive and only shows the most
+important parts of the application.
 
 <details>
 <summary>UC01 – Add a Review</summary>
