@@ -2,7 +2,7 @@
 
 MealMeter is a restaurant feedback application that allows patrons to submit structured feedback about their dining experience directly at the point of sale. Patrons can rate food quality, cleanliness, and service, leave a written review, and optionally add tags. Owners can then review, sort, filter, organise, and manage the submitted feedback from a separate management view.
 
-![Patron Feedback screen](docs/gui-images/updated-gui-review-screen.png)
+![Patron Feedback screen](gui-images/updated-gui-review-screen.png)
 
 ## Table of Contents
 
@@ -84,9 +84,9 @@ Notes:
 - Tags are optional.
 - Reviews are saved automatically after submission.
 
-![Patron Feedback form](docs/gui-images/patron-feedback-form.png)
+![Patron Feedback form](gui-images/patron-feedback-form.png)
 
-![Successfully submitted review message](docs/gui-images/submit-review-success.png)
+![Successfully submitted review message](gui-images/submit-review-success.png)
 
 ### Logging in as the Owner
 
@@ -104,7 +104,7 @@ password
 
 If the password is correct, the Owner Management view will open. If it is incorrect, access will be denied and the application will return to the Patron Feedback tab.
 
-![Owner login pop-up](docs/gui-images/updated-gui-owner-login-popup.png)
+![Owner login pop-up](gui-images/updated-gui-owner-login-popup.png)
 
 ### Viewing and Managing Reviews
 
@@ -121,7 +121,7 @@ Once logged in, the **Owner Management** tab shows a table of submitted reviews.
 
 From this screen, the owner can sort reviews, apply filters, mark reviews as resolved or outstanding, add or delete tags, delete reviews, refresh the table, and log out.
 
-![Owner Management screen](docs/gui-images/updated-gui-owner-management.png)
+![Owner Management screen](gui-images/updated-gui-owner-management.png)
 
 ### Sorting Reviews
 
@@ -140,7 +140,7 @@ To sort the reviews:
 
 The table will refresh to show the sorted review list.
 
-![Sort controls](docs/gui-images/sort-controls.png)
+![Sort controls](gui-images/sort-controls.png)
 
 ### Filtering Reviews
 
@@ -207,11 +207,11 @@ Notes:
 - Use **Refresh** to return to the full review list after filtering or sorting.
 - Condition input must match the implemented parser format exactly.
 
-![Filter controls](docs/gui-images/filter-controls.png)
+![Filter controls](gui-images/filter-controls.png)
 
 ### Owner Review Management
 
-![Owner review management actions](docs/gui-images/owner-review-management.png)
+![Owner review management actions](gui-images/owner-review-management.png)
 
 ### Marking a Review as Resolved or Outstanding
 

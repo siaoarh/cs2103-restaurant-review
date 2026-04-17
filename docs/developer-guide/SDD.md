@@ -27,7 +27,7 @@ The system follows a 4-layer architecture structure consisting of:
 
 ### Architecture Diagram
 
-![Architecture Diagram](/docs/developer-guide/architecture/architecture-diagram.jpg)
+![Architecture Diagram](architecture/architecture-diagram.jpg)
 
 ---
 
@@ -99,10 +99,10 @@ The system follows a 4-layer architecture structure consisting of:
 ## UML Diagrams
 
 #### `Ui` Class Diagram
-![Ui Class Diagram](/docs/developer-guide/architecture/ui-class-diagram.png)
+![Ui Class Diagram](architecture/ui-class-diagram.png)
 
 #### `Logic` Class Diagram
-![Logic Class Diagram](/docs/developer-guide/architecture/logic-class-diagram.png)
+![Logic Class Diagram](architecture/logic-class-diagram.png)
 
 The above depicts a (partial) class diagram of the `Logic` component. Not depicted are the `Command` subclasses and
 their individual dependencies to the enums and the model components.
@@ -120,7 +120,7 @@ used by `SortReviewsCommand`.
 Any `Command` that changes the `Model` will invoke `Storage` to save the updated model to the data file.
 
 ### `Model` Class Diagram
-![Model Class Diagram](/docs/developer-guide/architecture/model-class-diagram.png)
+![Model Class Diagram](architecture/model-class-diagram.png)
 
 The above depicts the class diagram of the `Model` component. This component stores the `Review` information of the
 application in memory. The `Model` offers wrapper methods for the `Logic` component to access and manipulate the data.
@@ -129,7 +129,7 @@ The `Model` loaded into memory is done by the `Storage` component on application
 `Command` objects whenever a change is made to the data via the `Storage` component.
 
 ### `Storage` Class Diagram
-![Storage Class Diagram](/docs/developer-guide/architecture/storage-class-diagram.png)
+![Storage Class Diagram](architecture/storage-class-diagram.png)
 
 The above depicts the class diagram of the `Storage` component. This component is responsible for loading and saving
 `Review` objects to the data file. During initialisation, the `Storage` component will attempt to load reviews from
@@ -145,29 +145,29 @@ important parts of the application. For brevity, the sequence diagrams do not de
 interactions.
 
 #### Feature: Adding a Review
-![Sequence Diagram](/docs/developer-guide/architecture/seq-diagram-add-review.png)
+![Sequence Diagram](architecture/seq-diagram-add-review.png)
 
 ---
 
 #### Feature: Deleting a Review
-![Sequence Diagram](/docs/developer-guide/architecture/seq-diagram-delete-review.png)
+![Sequence Diagram](architecture/seq-diagram-delete-review.png)
 
 ---
 
 #### Feature: Adding Tags to a Review
-![Sequence Diagram](/docs/developer-guide/architecture/seq-diagram-add-tag.png)
+![Sequence Diagram](architecture/seq-diagram-add-tag.png)
 
 The constructor of `Tag` is not shown in the diagram but is called when the static method `toTags()` is called.
 
 ---
 
 #### Feature: Sorting Reviews
-![Sequence Diagram](/docs/developer-guide/architecture/seq-diagram-sort.png)
+![Sequence Diagram](architecture/seq-diagram-sort.png)
 
 ---
 
 #### Feature: Filtering Reviews
-![Sequence Diagram](/docs/developer-guide/architecture/seq-diagram-filter.png)
+![Sequence Diagram](architecture/seq-diagram-filter.png)
 
 The constructors of `Tag`, `Condition` and `Criterion` are not shown in the diagram.
 The `Tag` constructor is called when the static method `toTags()` is called.
@@ -176,7 +176,7 @@ The `Condition` and `Criterion` constructors are called when the static method `
 
 ### Use Case Diagram
 
-![Use Case Diagram](/docs/developer-guide/architecture/use-case-diagram.png)
+![Use Case Diagram](architecture/use-case-diagram.png)
 
 The above depicts the use case diagram of the application. The application is designed to be used by both restaurant
 patrons and restaurant owners. However, most of the features are only available to restaurant owners, with patrons only
