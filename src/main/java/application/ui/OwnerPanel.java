@@ -86,7 +86,7 @@ public class OwnerPanel extends JPanel {
         statusCombo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         this.conditionsField = new JTextField(30);
         conditionsField.setToolTipText(
-                "e.g. food scores > 3.5, cleanliness scores >= 4, service scores == 5");
+                "e.g. food > 3.5, cleanliness >= 4, service == 5");
 
         contentPanel.add(createControlPanel(), BorderLayout.NORTH);
 
