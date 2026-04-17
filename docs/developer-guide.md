@@ -12,6 +12,7 @@ implementation of MealMeter.
    1. [Logic Component API](developer-guide/api/logic-API.md)
    2. [Storage Component API](developer-guide/api/storage-API.md)
 4. [User Guide](user-guide.md)
+5. [Testing Guide](testing-guide.md)
 
 ## Prerequisites
 
@@ -20,4 +21,4 @@ implementation of MealMeter.
 - Fork the repository [here](https://github.com/CS2103DE-Group-2/restaurant-review).
 - Dependencies for the project can be found in the `build.gradle` file.
 - Java JDK version 21 was used for development.
-- Gradle version 7.4.2 was used for development.
+- Gradle version 8.5 was used for development.
